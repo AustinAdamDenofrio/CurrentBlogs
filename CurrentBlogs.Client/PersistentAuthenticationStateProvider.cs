@@ -19,6 +19,7 @@ namespace CurrentBlogs.Client
 
         private readonly Task<AuthenticationState> authenticationStateTask = defaultUnauthenticatedTask;
 
+        //webassembly knows about claims principal because of persistant....
         public PersistentAuthenticationStateProvider(PersistentComponentState state)
         {
             if (!state.TryTakeFromJson<UserInfo>(nameof(UserInfo), out var userInfo) || userInfo is null)
@@ -34,6 +35,7 @@ namespace CurrentBlogs.Client
                 new Claim(nameof(UserInfo.FirstName), userInfo.FirstName),
                 new Claim(nameof(UserInfo.LastName), userInfo.LastName),
                 new Claim(nameof(UserInfo.ProfilePictureUrl), userInfo.ProfilePictureUrl),
+                .. userInfo.Roles.Select(role => new Claim(ClaimTypes.Role, role))
             ];
 
             authenticationStateTask = Task.FromResult(

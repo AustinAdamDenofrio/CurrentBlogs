@@ -53,7 +53,7 @@ namespace CurrentBlogs.Models
                 UpdateReason = comment.UpdateReason,
                 AuthorId = comment.AuthorId,
                 AuthorName = comment.Author?.FullName,
-                //AuthorImageUrl = comment.Author.ImageId.HasValue ? $"/api/uploads/{comment.Author.ImageId}" : "",
+                AuthorImageUrl = comment.Author!.ImageId.HasValue ? $"/api/uploads/{comment.Author.ImageId}" : "",
                 BlogPostId = comment.BlogPostId,
             };
 

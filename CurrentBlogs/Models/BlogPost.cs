@@ -74,6 +74,7 @@ namespace CurrentBlogs.Models
                 Updated = blogPost.Updated,
                 IsPublished = blogPost.IsPublished,
                 IsDeleted = blogPost.IsDeleted,
+                //No default picture
                 ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : null,
                 CategoryId = blogPost.CategoryId,
             };

@@ -104,7 +104,8 @@ namespace CurrentBlogs.Components.Account
                         Email = email,
                         FirstName = firstName,
                         LastName = lasttName,
-                        ProfilePictureUrl = profilePictureUrl
+                        ProfilePictureUrl = profilePictureUrl,
+                        Roles = [.. principal.FindAll(ClaimTypes.Role).Select(claim => claim.Value)]
                     });
                     ;
                 }

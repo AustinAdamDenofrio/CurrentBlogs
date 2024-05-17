@@ -1,0 +1,102 @@
+﻿@page "/categories/edit/{id:int}"
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@* @attribute [Authorize] *@
+
+@inject NavigationManager Nav
+@inject ICategoryDTOService CategoryService
+
+@if (category is not null)
+{
+
+    <PageTitle>Cloud Contacts | @(string.IsNullOrEmpty(category?.Name) ? "Edit Category" : category.Name)</PageTitle>
+
+
+
+    <div class="p-3 my-5 border-2 shadow-lg bg-light">
+        <CategoryForm 
+            Category="category"
+            OnSubmit="HandleSubmit" 
+            />
+    </div>
+
+}
+else
+{
+    <div class="text-center">
+        <h3>Uh oh!</h3>
+        <p>No Contact exists with that information</p>
+    </div>
+}
+
+@code {
+    #region  parameter
+    //From Page Route
+    [Parameter]
+    public int Id { get; set; }
+
+    private CategoryDTO? category;
+    string errorMessage = string.Empty;
+
+    private UserInfo? userInfo;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthStateTask { get; set; }
+    #endregion
+
+
+    #region  state
+    #endregion
+
+
+
+    #region  methods
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            //get user info
+            userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+            //get the contact info by id from database
+            category = await CategoryService.GetCategoryByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            category = null;
+        }
+
+        if (category is null)
+        {
+            Nav.NavigateTo("/categories");
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            errorMessage = string.Empty;
+
+            if (category is not null)
+            {
+                await CategoryService.UpdateCategoryAsync(category);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+
+            errorMessage = "An error occurred while trying to update this category";
+        }
+
+        if (errorMessage == string.Empty)
+        {
+            Nav.NavigateTo("/categories");
+        }
+    }
+    #endregion
+}

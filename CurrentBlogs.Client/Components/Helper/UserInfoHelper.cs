@@ -26,6 +26,7 @@ namespace CurrentBlogs.Client.Components.Helper
                 FirstName = firstName,
                 LastName = lastName,
                 ProfilePictureUrl = profilePictureUrl,
+                Roles = [.. authState.User.FindAll(ClaimTypes.Role).Select(c => c.Value)]
             };
 
             return userInfo;
