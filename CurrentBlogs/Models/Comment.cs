@@ -1,4 +1,5 @@
-﻿using CurrentBlogs.Data;
+﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Data;
 using System.ComponentModel.DataAnnotations;
 
 namespace CurrentBlogs.Models
@@ -37,4 +38,28 @@ namespace CurrentBlogs.Models
         public virtual BlogPost? BlogPost { get; set;}
 
     }
+
+    public static class CommentExtensions
+    {
+
+        public static CommentDTO ToDTO(this Comment comment)
+        {
+            CommentDTO dto = new CommentDTO()
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                Created = comment.Created,
+                Updated = comment.Updated,
+                UpdateReason = comment.UpdateReason,
+                AuthorId = comment.AuthorId,
+                AuthorName = comment.Author?.FullName,
+                //AuthorImageUrl = comment.Author.ImageId.HasValue ? $"/api/uploads/{comment.Author.ImageId}" : "",
+                BlogPostId = comment.BlogPostId,
+            };
+
+
+            return dto;
+        }
+    }
+
 }

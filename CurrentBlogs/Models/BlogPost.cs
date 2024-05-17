@@ -7,8 +7,6 @@ namespace CurrentBlogs.Models
 {
     public class BlogPost
     {
-
-
         private DateTimeOffset _created;
         private DateTimeOffset? _updated;
         public int Id { get; set; }
@@ -48,37 +46,55 @@ namespace CurrentBlogs.Models
         public Guid? ImageId { get; set; }
         public virtual ImageUpload? Image { get; set; }
 
+
         [Required]
         public int CategoryId { get; set; }
         public virtual Category? Category { get; set; }
 
+
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
+
 
         public virtual ICollection<Tag> Tags { get; set; }  = new HashSet<Tag>();
     }
 
-    //public static class BlogPostExtensions
-    //{
+    public static class BlogPostExtensions
+    {
 
-    //    public static BlogPostDTO ToDTO(this BlogPost blogPost)
-    //    {
-    //        BlogPostDTO dto = new BlogPostDTO()
-    //        {
-    //            Id = blogPost.Id,
-    //            FirstName = blogPost.FirstName,
+        public static BlogPostDTO ToDTO(this BlogPost blogPost)
+        {
+            BlogPostDTO dto = new BlogPostDTO()
+            {
+                Id = blogPost.Id,
+                Title = blogPost.Title,
+                Slug = blogPost.Slug,
+                Abstract = blogPost.Abstract,
+                Content = blogPost.Content,
+                Created = blogPost.Created,
+                Updated = blogPost.Updated,
+                IsPublished = blogPost.IsPublished,
+                IsDeleted = blogPost.IsDeleted,
+                ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : null,
+                CategoryId = blogPost.CategoryId,
+            };
 
-    //            ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : UploadHelper.DefaultContactImage,
-    //        };
+            //ToDo: Category
+                
 
-    //        //ToDo: Categories
+            //ToDo: Comments
+            foreach (Comment comment in blogPost.Comments)
+            {
+                dto.Comments.Add(comment.ToDTO());
+            }
 
-    //        foreach (Category category in contact.Categories)
-    //        {
-    //            category.Contacts.Clear();
-    //            dto.Categories.Add(category.ToDTO());
-    //        }
+            //ToDo: Tags
+            foreach (Tag tag in blogPost.Tags)
+            {
+                tag.BlogPosts.Clear();
+                dto.Tags.Add(tag.ToDTO());
+            }
 
-    //        return dto;
-    //    }
-    //}
+            return dto;
+        }
+    }
 }
