@@ -1,0 +1,29 @@
+﻿@page "/blogpost/create"
+@attribute [Authorize]
+@inject ICategoryDTOService CategoryService
+@inject NavigationManager Nav
+@rendermode InteractiveServer
+
+<PageTitle>Cloud Contaacts | New Contact</PageTitle>
+
+<div class="p-3 my-5 border border-2 shadow-lg bg-light">
+    <CategoryForm 
+        Category="new CategoryDTO()"
+        OnSubmit="HandleSubmit"/>
+</div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    private async Task HandleSubmit(CategoryDTO category)
+    {
+        UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+
+        if(userInfo is not null)
+        {
+            await CategoryService.CreateCategoryAsync(category);
+            Nav.NavigateTo("categories");
+        }
+    }
+}

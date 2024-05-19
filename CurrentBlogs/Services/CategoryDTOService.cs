@@ -61,7 +61,6 @@ namespace CurrentBlogs.Services
             {
                 category.Name = categoryDTO.Name;
                 category.Description = categoryDTO.Description;
-                //Add images and Descriptions
                 if (categoryDTO.ImageUrl?.StartsWith("data:") == true)
                 {
                     category.Image = UploadHelper.GetImageUpload(categoryDTO.ImageUrl);
