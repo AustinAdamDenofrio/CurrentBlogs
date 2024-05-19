@@ -13,57 +13,73 @@
 
 
     @*Add new Categories*@
-    <a href="/categories/create">
-        Add new Category
-    </a>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="/categories/create" class="btn btn-primary ">
+            <i class="ai-arrow-down"> </i>
+            Add new Category
+        </a>
+    </div>
 
     @*Generate Categories on the Page*@
     @foreach (CategoryDTO category in categories)
     {
+
         <div @key="category.Id">
             <article class="row g-0 border-0 mb-4 bg-secondary-subtle rounded-5">
                 <a class="col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="blog-single-v1.html" style="background-image: url(@category.ImageUrl); min-height: 14rem" aria-label="Post image">
                 </a>
                 <div class="col-sm-7">
-                    <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4">
-                        <h3>
-                            <a href="blog-single-v1.html">@category.Name</a>
-                        </h3>
-                        <p class="d-sm-none d-md-block">@category.Description</p>
+                    <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
+                        <div class="flex-grow-1">
+                            <h3 class="d-flex justify-content-center justify-content-sm-start">
+                                <a href="blog-single-v1.html">@category.Name</a>
+                            </h3>
+                            <div class="d-flex justify-content-center justify-content-sm-start">
+                                <p class="d-sm-none d-md-block">@category.Description</p>
+                            </div>
+                        </div>
 
-                        @*Authorized users only*@
-                        @if (isDeleting == false)
-                        {
-                            <div class="fs-4">
-                                <a class="me-3 editIcons" href="/categories/edit/@category.Id"><i class="ai-edit"></i></a>
-
-                                <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
-                                    <i class="ai-trash text-danger "></i>
+                        <div class="flex-shrink-0">
+                            <div class="d-flex flex-wrap justify-content-center my-2">
+                                <a class="badge text-nav fs-xs border mt-1" href="#">
+                                    @*Tags in a foreach loop*@
+                                    Tag
                                 </a>
                             </div>
+                            @*Authorized users only*@
+                            @if (isDeleting == false)
+                            {
+                                <div class="fs-4 d-flex justify-content-center">
+                                    <a class="me-3 editIcons" href="/categories/edit/@category.Id"><i class="ai-edit"></i></a>
 
-                        }
-                        else
-                        {
-                            <div class="text-danger">Are you sure you want to delete this Contact?</div>
-                            <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteCategory(category.Id)">Delete</button>
-                            <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
-                        }
+                                    <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
+                                        <i class="ai-trash text-danger "></i>
+                                    </a>
+                                </div>
 
-                        <div class="d-flex flex-wrap align-items-center mt-n2">
-                            <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                                6
-                                <i class="ai-share fs-lg ms-1"></i>
-                            </a>
-                            <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
-                                12
-                                <i class="ai-message fs-lg ms-1"></i>
-                            </a>
-                            <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                            <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
-                            <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                            <a class="badge text-nav fs-xs border mt-2" href="#">Business</a>
+                            }
+                            else
+                            {
+                                <div class="text-danger">Are you sure you want to delete this Contact?</div>
+                                <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteCategory(category.Id)">Delete</button>
+                                <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
+                            }
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
+                                    6
+                                    <i class="ai-share fs-lg ms-1"></i>
+                                </a>
+                                <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
+                                    @*Number of Comments*@
+                                    12
+                                    <i class="ai-message fs-lg ms-1"></i>
+                                </a>
+                                <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
+                                <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
+                            </div>
+
                         </div>
+
                     </div>
                 </div>
             </article>

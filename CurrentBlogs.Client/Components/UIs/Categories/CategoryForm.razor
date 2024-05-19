@@ -2,78 +2,95 @@
 
 @if (Category is not null)
 {
-    <div class="vstack">
-        <div class="d-flex justify-content-center align-items-center p-5 border border-2 shadow-lg bg-light">
-            <div class="col-lg-9 ">
-                <div @key="Category.Id">
-                    <article class="row g-0 border-0 mb-4 bg-secondary-subtle rounded-5">
-                        <img src="@(string.IsNullOrEmpty(Category.ImageUrl) ? ImageHelper.DefaultCategoryPicture : Category.ImageUrl)"
-                             class="square-img col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" />
-                        <div class="col-sm-7">
-                            <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4">
-                                <div class="">
-                                    <h3>
-                                        <a href="blog-single-v1.html">@Category.Name</a>
-                                    </h3>
-                                    <p class="d-sm-none d-md-block">@Category.Description</p>
-                                </div>
-                                <div class="d-flex justify-content-center">
-                                    <div class="d-flex flex-wrap align-items-center mt-n2">
-                                    <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                                        6
-                                        <i class="ai-share fs-lg ms-1"></i>
-                                    </a>
-                                    <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
-                                        12
-                                        <i class="ai-message fs-lg ms-1"></i>
-                                    </a>
-                                    <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                                    <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
-                                    <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                                    <a class="badge text-nav fs-xs border mt-2" href="#">Business</a>
-                                </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-center align-items-center p-5 border border-2 shadow-lg bg-light">
+                <div class="col-lg-9 ">
+                    <div @key="Category.Id">
+                        <article class="row g-0 border-0 mb-4 bg-secondary-subtle rounded-5">
+                            <img src="@(string.IsNullOrEmpty(Category.ImageUrl) ? ImageHelper.DefaultCategoryPicture : Category.ImageUrl)"
+                                 class="square-img col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" />
+                            <div class="col-sm-7">
+                                <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
+                                    <div class="flex-grow-1">
+                                        <h3 class="d-flex justify-content-center justify-content-sm-start">
+                                            <a href="blog-single-v1.html">@Category.Name</a>
+                                        </h3>
+                                        <div class="d-flex justify-content-center justify-content-sm-start">
+                                            <p class="d-sm-none d-md-block">@Category.Description</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0">
+                                        <div class="d-flex flex-wrap justify-content-center my-2">
+                                            <a class="badge text-nav fs-xs border mt-1" href="#">
+                                                @*Tags in a foreach loop*@
+                                                Tag
+                                            </a>
+                                        </div>
+                                        <div class="d-flex flex-wrap justify-content-center">
+                                            <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
+                                                6
+                                                <i class="ai-share fs-lg ms-1"></i>
+                                            </a>
+                                            <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
+                                                @*Number of Comments*@
+                                                12
+                                                <i class="ai-message fs-lg ms-1"></i>
+                                            </a>
+                                            <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
+                                            <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    </div>
                 </div>
             </div>
         </div>
+
         <EditForm Model="Category" OnValidSubmit="HandleSubmit">
             <DataAnnotationsValidator />
-            <div class="col-lg-9 pe-lg-4 pe-xl-5">
+
+            <h2 class="mt-4">Category Preview</h2>
+
+            <div class="col-lg-12 pe-lg-4 pe-xl-5">
                 <div class="row">
                     <div class="col-12">
-                        <label class="form-label"> New Category  </label>
-                    </div>
-
-                    <div class="col-12">
-                        <div class="col-12 col-md-4">
-                            <div>
-                                <InputFile OnChange="OnFileChange" class="form-control mt-2" accept=".png, .jpg, .jpeg, .svg" />
-                                <span class="text-danger"> @imageError </span>
-                            </div>
-
-                        </div>
-                        <div>
-                            <label class="form-label"> Category Name  </label>
+                        <div class="my-3">
+                            <label class="form-label"> Name  </label>
                             <InputText class="form-control" placeholder="Category Name" @bind-Value="Category.Name"></InputText>
                             <ValidationMessage For="() => Category.Name" />
-
                         </div>
 
-                        <div>
-                            <label class="form-label"> Category Description  </label>
+                        <div class="my-3">
+                            <label class="form-label"> Description  </label>
                             <InputText class="form-control" placeholder="Category Description" @bind-Value="Category.Description"></InputText>
                             <ValidationMessage For="() => Category.Description" />
 
                         </div>
                     </div>
                 </div>
-                <div>
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        Save a Copy
-                    </button>
+                <div class="row my-3">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label"> Image:  </label>
+                        <InputFile OnChange="OnFileChange" class="form-control" accept=".png, .jpg, .jpeg, .svg" />
+                        <span class="text-danger"> @imageError </span>
+                    </div>
+                    <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
+                        <div class="d-flex justify-content-end">
+                            <div class="me-3">
+                                <a class="btn btn-outline-secondary" href="categories">
+                                    Cancel
+                                </a>
+                            </div>
+                            <div class="">
+                                <button type="submit" class="btn btn-primary">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </EditForm>
