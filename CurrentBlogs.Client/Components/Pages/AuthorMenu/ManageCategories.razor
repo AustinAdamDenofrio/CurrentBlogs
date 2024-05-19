@@ -1,0 +1,138 @@
+﻿@page "/manage_categories"
+@using CloudContacts.Client.Components.Helper
+@using CurrentBlogs.Client.Components.Services.Interfaces
+
+@attribute [Authorize]
+
+@inject ICategoryDTOService CategoryService
+@rendermode InteractiveServer
+
+<PageTitle>Current Blogs | Categories</PageTitle>
+
+<div class="col-lg-9 pe-lg-4 pe-xl-5">
+
+    @*Add new Categories*@
+    <div class="d-flex justify-content-center  justify-content-sm-end justify-content-md-start mb-3">
+        <a href="/categories/create" class="btn btn-primary ">
+            <i class="ai-arrow-down d-sm-none"> </i>
+                  Add category
+            <i class="ai-arrow-down d-sm-none"> </i>
+        </a>
+    </div>
+
+    @*Generate Categories on the Page*@
+    @foreach (CategoryDTO category in categories)
+    {
+        <div @key="category.Id">
+            <AuthorCategoryCard Category="category"
+                          OnDelete="DeleteCategory" />
+        </div>
+    }
+
+
+</div>
+
+
+
+
+@code {
+    #region Parameter
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthStateTask { get; set; }
+
+    #endregion
+
+    #region State
+
+    private UserInfo? userInfo;
+
+    private CategoryDTO formCategory = new CategoryDTO();
+    private IEnumerable<CategoryDTO> categories = [];
+    private string? imageError;
+
+    //Toggles confirm deletion
+    bool isDeleting = false;
+    #endregion
+
+    #region Methods
+
+    protected override async Task OnInitializedAsync()
+    {
+        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+        //Get All Categories
+        categories = await CategoryService.GetAllCategoriesAsync();
+    }
+
+    // private async Task HandleSubmit()
+    // {
+
+    //     try
+    //     {
+    //         await CategoryService.CreateCategoryAsync(formCategory);
+    //         formCategory = new CategoryDTO();
+    //         categories = await CategoryService.GetAllCategoriesAsync();
+
+
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex);
+    //     }
+    // }
+
+    private async Task DeleteCategory(int categoryId)
+    {
+        try
+        {
+            await CategoryService.DeleteCategoryAsync(categoryId);
+
+            categories = await CategoryService.GetAllCategoriesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    // private async Task UpdateCategory(CategoryDTO category)
+    // {
+    //     try
+    //     {
+    //         await CategoryService.UpdateCategoryAsync(category);
+    //         categories = await CategoryService.GetAllCategoriesAsync();
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         Console.WriteLine(ex);
+    //     }
+    // }
+
+    // private async Task OnFileChange(InputFileChangeEventArgs changeEvent)
+    // {
+    //     imageError = null;
+
+    //     if (changeEvent.File is null)
+    //     {
+    //         formCategory!.ImageUrl = ImageHelper.DefaultContactImage;
+    //     }
+    //     else if (changeEvent.File.Size > ImageHelper.MaxFileSize)
+    //     {
+    //         imageError = "Images must be less than 5 MB";
+    //     }
+    //     else
+    //     {
+    //         try
+    //         {
+    //             formCategory!.ImageUrl = await ImageHelper.GetDataUrl(changeEvent.File);
+    //         }
+    //         catch (Exception ex)
+    //         {
+    //             Console.WriteLine(ex);
+    //             imageError = "Could not read the selected file. Please select a diffferent image.";
+    //         }
+    //     }
+
+    // }
+    #endregion
+}

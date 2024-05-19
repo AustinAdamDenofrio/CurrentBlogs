@@ -9,84 +9,14 @@
 <PageTitle>Current Blogs | Categories</PageTitle>
 
 <div class="col-lg-9 pe-lg-4 pe-xl-5">
-    <h1 class="pb-3 pb-lg-4">Blog list with sidebar</h1>
-
-
-    @*Add new Categories*@
-    <div class="d-flex justify-content-end mb-3">
-        <a href="/categories/create" class="btn btn-primary ">
-            <i class="ai-arrow-down"> </i>
-            Add new Category
-        </a>
-    </div>
-
     @*Generate Categories on the Page*@
     @foreach (CategoryDTO category in categories)
     {
-
         <div @key="category.Id">
-            <article class="row g-0 border-0 mb-4 bg-secondary-subtle rounded-5">
-                <a class="col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="blog-single-v1.html" style="background-image: url(@category.ImageUrl); min-height: 14rem" aria-label="Post image">
-                </a>
-                <div class="col-sm-7">
-                    <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
-                        <div class="flex-grow-1">
-                            <h3 class="d-flex justify-content-center justify-content-sm-start">
-                                <a href="blog-single-v1.html">@category.Name</a>
-                            </h3>
-                            <div class="d-flex justify-content-center justify-content-sm-start">
-                                <p class="d-sm-none d-md-block">@category.Description</p>
-                            </div>
-                        </div>
-
-                        <div class="flex-shrink-0">
-                            <div class="d-flex flex-wrap justify-content-center my-2">
-                                <a class="badge text-nav fs-xs border mt-1" href="#">
-                                    @*Tags in a foreach loop*@
-                                    Tag
-                                </a>
-                            </div>
-                            @*Authorized users only*@
-                            @if (isDeleting == false)
-                            {
-                                <div class="fs-4 d-flex justify-content-center">
-                                    <a class="me-3 editIcons" href="/categories/edit/@category.Id"><i class="ai-edit"></i></a>
-
-                                    <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
-                                        <i class="ai-trash text-danger "></i>
-                                    </a>
-                                </div>
-
-                            }
-                            else
-                            {
-                                <div class="text-danger">Are you sure you want to delete this Contact?</div>
-                                <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteCategory(category.Id)">Delete</button>
-                                <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
-                            }
-                            <div class="d-flex flex-wrap justify-content-center">
-                                <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                                    6
-                                    <i class="ai-share fs-lg ms-1"></i>
-                                </a>
-                                <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
-                                    @*Number of Comments*@
-                                    12
-                                    <i class="ai-message fs-lg ms-1"></i>
-                                </a>
-                                <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                                <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </article>
+            <CategoryCard 
+                Category="category"/>
         </div>
     }
-
-
 </div>
 
 
@@ -95,101 +25,19 @@
 @code {
     #region Parameter
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthStateTask { get; set; }
-
     #endregion
 
     #region State
 
-    private UserInfo? userInfo;
-
-    private CategoryDTO formCategory = new CategoryDTO();
     private IEnumerable<CategoryDTO> categories = [];
-    private string? imageError;
-
-    //Toggles confirm deletion
-    bool isDeleting = false;
     #endregion
 
     #region Methods
 
     protected override async Task OnInitializedAsync()
     {
-        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
         //Get All Categories
         categories = await CategoryService.GetAllCategoriesAsync();
-    }
-
-    private async Task HandleSubmit()
-    {
-
-        try
-        {
-            await CategoryService.CreateCategoryAsync(formCategory);
-            formCategory = new CategoryDTO();
-            categories = await CategoryService.GetAllCategoriesAsync();
-
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-
-    private async Task DeleteCategory(int categoryId)
-    {
-        try
-        {
-            await CategoryService.DeleteCategoryAsync(categoryId);
-
-            categories = await CategoryService.GetAllCategoriesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-
-    private async Task UpdateCategory(CategoryDTO category)
-    {
-        try
-        {
-            await CategoryService.UpdateCategoryAsync(category);
-            categories = await CategoryService.GetAllCategoriesAsync();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex);
-        }
-    }
-
-    private async Task OnFileChange(InputFileChangeEventArgs changeEvent)
-    {
-        imageError = null;
-
-        if (changeEvent.File is null)
-        {
-            formCategory!.ImageUrl = ImageHelper.DefaultContactImage;
-        }
-        else if (changeEvent.File.Size > ImageHelper.MaxFileSize)
-        {
-            imageError = "Images must be less than 5 MB";
-        }
-        else
-        {
-            try
-            {
-                formCategory!.ImageUrl = await ImageHelper.GetDataUrl(changeEvent.File);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                imageError = "Could not read the selected file. Please select a diffferent image.";
-            }
-        }
-
     }
     #endregion
 }

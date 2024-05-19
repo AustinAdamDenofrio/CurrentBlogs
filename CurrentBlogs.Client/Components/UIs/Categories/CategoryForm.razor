@@ -6,45 +6,57 @@
         <div class="col-12">
             <div class="d-flex justify-content-center align-items-center p-5 border border-2 shadow-lg bg-light">
                 <div class="col-lg-9 ">
-                    <div @key="Category.Id">
-                        <article class="row g-0 border-0 mb-4 bg-secondary-subtle rounded-5">
-                            <img src="@(string.IsNullOrEmpty(Category.ImageUrl) ? ImageHelper.DefaultCategoryPicture : Category.ImageUrl)"
-                                 class="square-img col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" />
-                            <div class="col-sm-7">
-                                <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
-                                    <div class="flex-grow-1">
-                                        <h3 class="d-flex justify-content-center justify-content-sm-start">
-                                            <a href="blog-single-v1.html">@Category.Name</a>
-                                        </h3>
-                                        <div class="d-flex justify-content-center justify-content-sm-start">
-                                            <p class="d-sm-none d-md-block">@Category.Description</p>
+                    <article class="row g-0 border-0 pt-3 pt-sm-0 mb-4">
+                        <a class="col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="blog-single-v2.html" style="background-image: url(@(string.IsNullOrEmpty(Category.ImageUrl) ? ImageHelper.DefaultCategoryPicture : Category.ImageUrl)); min-height: 14rem" aria-label="Post image">
+                        </a>
+                        <div class="col-sm-7">
+                            <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
+                                <div class="flex-grow-1">
+                                    <h3>
+                                        <a href="blog-single-v2.html">@Category.Name</a>
+                                    </h3>
+                                    <p class="d-sm-none d-md-block">@Category.Description</p>
+                                </div>
+                                <div class="row flex-shrink-0">
+                                    <div class="col-12 col-md-7 d-flex justify-content-start">
+                                        <div class="vstack justify-content-end align-items-start">
+                                            <div class="d-flex flex-wrap mt-n2">
+                                                <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
+                                                    10
+                                                    <i class="ai-share fs-lg ms-1"></i>
+                                                </a>
+                                                <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
+                                                    4
+                                                    <i class="ai-message fs-lg ms-1"></i>
+                                                </a>
+                                                <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
+                                                <span class="fs-sm text-body-secondary mt-2">12 hours ago</span>
+                                                <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex-shrink-0">
-                                        <div class="d-flex flex-wrap justify-content-center my-2">
-                                            <a class="badge text-nav fs-xs border mt-1" href="#">
-                                                @*Tags in a foreach loop*@
-                                                Tag
+                                    <div class="col-12 col-md-5 d-flex align-items-end mt-2">
+                                        <div class="d-flex flex-wrap justify-content-center mt-n2">
+                                            @* @foreach (TagDTO tag in Category.tag)
+                                        {
+
+                                        } *@
+                                            <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
+                                                1st Tag
                                             </a>
-                                        </div>
-                                        <div class="d-flex flex-wrap justify-content-center">
-                                            <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                                                6
-                                                <i class="ai-share fs-lg ms-1"></i>
+                                            <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
+                                                2nd Tag
                                             </a>
-                                            <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
-                                                @*Number of Comments*@
-                                                12
-                                                <i class="ai-message fs-lg ms-1"></i>
+                                            <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
+                                                3rd Tag
                                             </a>
-                                            <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                                            <span class="fs-sm text-body-secondary mt-2">8 hours ago</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </article>
-                    </div>
+                        </div>
+                    </article>
+
                 </div>
             </div>
         </div>
@@ -80,7 +92,7 @@
                     <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
                         <div class="d-flex justify-content-end">
                             <div class="me-3">
-                                <a class="btn btn-outline-secondary" href="categories">
+                                <a class="btn btn-outline-secondary" href="manage_categories">
                                     Cancel
                                 </a>
                             </div>
