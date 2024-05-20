@@ -1,4 +1,4 @@
-﻿using CloudContacts.Client.Components.Helper;
+﻿using CurrentBlogs.Client.Components.Helper;
 using CurrentBlogs.Models;
 using System.Text.RegularExpressions;
 
@@ -7,6 +7,7 @@ namespace CurrentBlogs.Helper
     public class UploadHelper
     {
         public static readonly string DefaultProfilePicture = ImageHelper.DefaultCategoryPicture;
+        public static readonly string DefaultBlogImage = ImageHelper.DefaultCategoryPicture;
         public static readonly string DefaultContactImage = ImageHelper.DefaultContactImage;
         public static readonly int MaxFileSize = ImageHelper.MaxFileSize;
 

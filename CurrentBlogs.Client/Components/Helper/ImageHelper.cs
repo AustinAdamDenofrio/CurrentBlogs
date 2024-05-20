@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace CloudContacts.Client.Components.Helper
+namespace CurrentBlogs.Client.Components.Helper
 {
     public static class ImageHelper
     {
         public static readonly string DefaultCategoryPicture = "/images/Default_Category_Img.jpg";
+        public static readonly string DefaultBlogImage = "/images/Default_Category_Img.jpg";
         public static readonly string DefaultContactImage = "/img/DefaultContactPicture.png";
         public static readonly int MaxFileSize = 5 * 1024 * 1024;
 

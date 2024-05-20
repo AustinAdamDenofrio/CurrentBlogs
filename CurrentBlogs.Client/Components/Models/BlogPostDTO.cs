@@ -14,7 +14,6 @@ namespace CurrentBlogs.Client.Components.Models
         [StringLength(200, ErrorMessage = "The {0} must be at least {2} at most {1} characters long", MinimumLength = 2)]
         public string? Title { get; set; }
 
-        [Required]
         public string? Slug { get; set; }
 
         [Required]

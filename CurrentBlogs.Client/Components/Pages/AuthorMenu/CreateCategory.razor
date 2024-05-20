@@ -25,7 +25,7 @@
         if(userInfo is not null)
         {
             await CategoryService.CreateCategoryAsync(formCategory);
-            Nav.NavigateTo("manage_categories");
+            Nav.NavigateTo("author/categories");
         }
     }
 }

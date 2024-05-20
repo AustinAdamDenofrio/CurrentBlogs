@@ -1,4 +1,9 @@
-﻿      <!-- Navbar. Remove 'fixed-top' class to make the navigation bar scrollable with the page -->
+﻿@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+
+<!-- Navbar. Remove 'fixed-top' class to make the navigation bar scrollable with the page -->
 <header class="navbar navbar-expand-lg fixed-top bg-light">
     <div class="container">
 
@@ -39,29 +44,56 @@
                     </ul>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <NavLink class="nav-link dropdown-toggle" href="author" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        Author Menu
-                    </NavLink>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">New Post</a></li>
-                        <li><a class="dropdown-item" href="#">Manage Post</a></li>
-                        <li><a class="dropdown-item" href="/manage_categories">Manage Categories</a></li>
-                    </ul>
-                </li>
 
+                @*Author Menu Only*@
+                <AuthorizeView Roles="Author">
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle" href="Author" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                            Author Menu
+                        </NavLink>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/author/categories">Manage Categories</a></li>
+                            <li><a class="dropdown-item" href="/posts/create">New Post</a></li>
+                            <li><a class="dropdown-item" href="#">Manage Posts</a></li>
+                        </ul>
+                    </li>
+                </AuthorizeView>
+
+
+                <AuthorizeView>
+                    @*Logged In*@
+                    <Authorized>
+                        <li class="nav-item dropdown">
+                            <NavLink class="nav-link dropdown-toggle" href="account" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                @(context.User?.Identity?.Name ?? "Account")
+                            </NavLink>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="Account/Manage">Profile</a></li>
+                                <li>
+                                    <form class="dropdown-item" action="Account/Logout" method="post">
+                                        <AntiforgeryToken />
+                                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                        <button type="submit" class="nav-link">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                    </Authorized>
+                    @*Not logged in*@
+                    <NotAuthorized>
+                        <li>
+                            <NavLink class="nav-link" href="Account/Login" Match="NavLinkMatch.All">Login</NavLink>
+                        </li>
+
+                    </NotAuthorized>
                 <!-- ToDo: Push account to the right side -->
-                <li class="nav-item dropdown">
-                    <NavLink class="nav-link dropdown-toggle" href="account" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                        Account
-                    </NavLink>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="Account/Login">Login</a></li>
-                        <li><a class="dropdown-item" href="Account/Register">Register</a></li>
-                        <li><a class="dropdown-item" href="#">Log Out</a></li>
-                        <li><a class="dropdown-item" href="Account/Manage">Profile</a></li>
-                    </ul>
-                </li>
+                </AuthorizeView>
+
+
 
             </ul>
 
@@ -69,5 +101,22 @@
     </div>
 </header>
 @code {
+    private string? currentUrl;
 
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
 }

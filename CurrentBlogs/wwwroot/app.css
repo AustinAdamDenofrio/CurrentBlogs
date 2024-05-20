@@ -29,3 +29,8 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.rich-text-editor {
+    flex-grow: 1;
+    min-height: 400px;
+}

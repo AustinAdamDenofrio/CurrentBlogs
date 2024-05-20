@@ -1,8 +1,8 @@
-﻿@page "/manage_categories"
-@using CloudContacts.Client.Components.Helper
+﻿@page "/author/categories"
+@using CurrentBlogs.Client.Components.Helper
 @using CurrentBlogs.Client.Components.Services.Interfaces
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Author")]
 
 @inject ICategoryDTOService CategoryService
 @rendermode InteractiveServer
@@ -64,22 +64,6 @@
         categories = await CategoryService.GetAllCategoriesAsync();
     }
 
-    // private async Task HandleSubmit()
-    // {
-
-    //     try
-    //     {
-    //         await CategoryService.CreateCategoryAsync(formCategory);
-    //         formCategory = new CategoryDTO();
-    //         categories = await CategoryService.GetAllCategoriesAsync();
-
-
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine(ex);
-    //     }
-    // }
 
     private async Task DeleteCategory(int categoryId)
     {
@@ -95,44 +79,5 @@
         }
     }
 
-    // private async Task UpdateCategory(CategoryDTO category)
-    // {
-    //     try
-    //     {
-    //         await CategoryService.UpdateCategoryAsync(category);
-    //         categories = await CategoryService.GetAllCategoriesAsync();
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine(ex);
-    //     }
-    // }
-
-    // private async Task OnFileChange(InputFileChangeEventArgs changeEvent)
-    // {
-    //     imageError = null;
-
-    //     if (changeEvent.File is null)
-    //     {
-    //         formCategory!.ImageUrl = ImageHelper.DefaultContactImage;
-    //     }
-    //     else if (changeEvent.File.Size > ImageHelper.MaxFileSize)
-    //     {
-    //         imageError = "Images must be less than 5 MB";
-    //     }
-    //     else
-    //     {
-    //         try
-    //         {
-    //             formCategory!.ImageUrl = await ImageHelper.GetDataUrl(changeEvent.File);
-    //         }
-    //         catch (Exception ex)
-    //         {
-    //             Console.WriteLine(ex);
-    //             imageError = "Could not read the selected file. Please select a diffferent image.";
-    //         }
-    //     }
-
-    // }
     #endregion
 }

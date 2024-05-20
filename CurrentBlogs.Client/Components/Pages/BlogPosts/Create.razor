@@ -1,29 +1,35 @@
-﻿@page "/blogpost/create"
-@attribute [Authorize]
-@inject ICategoryDTOService CategoryService
+﻿@page "/posts/create"
+@attribute [Authorize(Roles = "Author")]
+
+@inject IBlogPostDTOService BlogService
 @inject NavigationManager Nav
+
 @rendermode InteractiveServer
 
-<PageTitle>Cloud Contaacts | New Contact</PageTitle>
+<PageTitle>Current Blogs | New Post</PageTitle>
 
-<div class="p-3 my-5 border border-2 shadow-lg bg-light">
-    <CategoryForm 
-        Category="new CategoryDTO()"
-        OnSubmit="HandleSubmit"/>
+<div class="container">
+    <h3>New Blog Post</h3>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <BlogPostForm
+                Post="new BlogPostDTO()"
+                OnSubmit="HandleSubmit"/>
+        </div>
+
+    </div>
 </div>
+
 
 @code {
     [CascadingParameter]
     public Task<AuthenticationState>? AuthStateTask { get; set; }
 
-    private async Task HandleSubmit(CategoryDTO category)
+    private async Task HandleSubmit(BlogPostDTO newPost)
     {
-        UserInfo? userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-
-        if(userInfo is not null)
-        {
-            await CategoryService.CreateCategoryAsync(category);
-            Nav.NavigateTo("manage_blog_posts");
-        }
+        await BlogService.CreateBlogPostAsync(newPost);
+        // await CategoryService.CreateCategoryAsync(post);
+        Nav.NavigateTo("/categories");
     }
 }
