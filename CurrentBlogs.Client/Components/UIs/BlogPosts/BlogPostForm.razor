@@ -1,5 +1,4 @@
-﻿
-@inject ICategoryDTOService CategoryService
+﻿@inject ICategoryDTOService CategoryService
 
 @if (Post is not null)
 {
@@ -22,6 +21,7 @@
             <div class="mb-2">
                 <label class="form-label">Category</label>
                 <InputSelect class="form-control" @bind-Value="Post.CategoryId">
+                    <option>Select a category...</option>
                     @foreach (CategoryDTO category in categories)
                     {
                         <option value="@category.Id">
@@ -30,7 +30,8 @@
                     }
 
                 </InputSelect>
-                <ValidationMessage For="() => Post.Abstract" />
+                <span class="text-danger">@categoryError </span>
+                <ValidationMessage For="() => Post.CategoryId" />
             </div>
             @*Image*@
             <div class="mb-2">
@@ -44,11 +45,11 @@
             @*Post content and tags*@
             <div class=" flex-fill vstack">
                 <label class="form-label">Content</label>
-                <TinyMCE.Blazor.Editor ScriptSrc="/tinymce/tinymce.min.js" 
-                                        @bind-Value="Post.Content"
-                                        Field="() => Post.Content"
-                                        ClassName="rich-text-editor"
-                                        Conf="editorConfig"/>
+                <TinyMCE.Blazor.Editor ScriptSrc="/tinymce/tinymce.min.js"
+                                       @bind-Value="Post.Content"
+                                       Field="() => Post.Content"
+                                       ClassName="rich-text-editor"
+                                       Conf="editorConfig" />
                 <ValidationMessage For="() => Post.Content" />
 
 
@@ -68,6 +69,10 @@
                     Publish?
                 </label>
             </div>
+            @* Change location to author index for posts*@
+            <a type="button" class="btn btn-outline-secondary" href="/">
+                Cancel
+            </a>
             <button type="submit" class="btn btn-primary">
                 Save
             </button>
@@ -101,6 +106,8 @@
 
     private string? imageError;
 
+    private string? categoryError = null;
+
     // tinyMCE config
     private static readonly Dictionary<string, object> editorConfig = new()
     {
@@ -116,7 +123,7 @@
                 new { text = "C#", value = "csharp" },
                 new { text = "Razor", value = "razor" },
                 new { text = "JSON", value = "json" },
-            }
+    }
         },
         { "codesample_global_prismjs", true },
         { "promotion", false },
@@ -140,13 +147,21 @@
 
     private async Task HandleSubmit()
     {
-        try
+        if (Post is not null && Post.CategoryId > 0)
         {
-            await OnSubmit.InvokeAsync(Post);
+            try
+            {
+                await OnSubmit.InvokeAsync(Post);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine(ex);
+            categoryError = "* Please select a category. Category is required.";
         }
     }
 
@@ -171,7 +186,7 @@
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                imageError = "Could not read the selected file. Please select a diffferent image.";
+                imageError = "Could not read the selected file. Please select a different image.";
             }
         }
     }

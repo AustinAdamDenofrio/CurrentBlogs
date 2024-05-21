@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Helper;
 using CurrentBlogs.Models;
 namespace CurrentBlogs.Models
 {
@@ -75,7 +76,7 @@ namespace CurrentBlogs.Models
                 IsPublished = blogPost.IsPublished,
                 IsDeleted = blogPost.IsDeleted,
                 //No default picture
-                ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : null,
+                ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : UploadHelper.DefaultBlogImage,
                 CategoryId = blogPost.CategoryId,
             };
 
@@ -93,6 +94,14 @@ namespace CurrentBlogs.Models
             {
                 tag.BlogPosts.Clear();
                 dto.Tags.Add(tag.ToDTO());
+            }
+
+            if (blogPost.Category is not null)
+            {
+                blogPost.Category.BlogPosts.Clear();
+                
+                CategoryDTO categoryDTO = blogPost.Category.ToDTO();
+                dto.Category = categoryDTO;
             }
 
             return dto;

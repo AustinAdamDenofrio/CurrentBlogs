@@ -1,4 +1,5 @@
 ﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Helper;
 using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 
@@ -35,7 +36,7 @@ namespace CurrentBlogs.Models
                 Id = category.Id,
                 Name = category.Name,
                 Description = category.Description,
-                ImageUrl = category.ImageId.HasValue ? $"/api/uploads/{category.ImageId}" : null,
+                ImageUrl = category.ImageId.HasValue ? $"/api/uploads/{category.ImageId}" : UploadHelper.DefaultBlogImage,
             };
 
             //ToDo: BlogPosts

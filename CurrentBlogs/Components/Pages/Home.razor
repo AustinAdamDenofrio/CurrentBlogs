@@ -1,11 +1,42 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@inject IBlogPostDTOService BlogPostService
 
-Welcome to your new app.
+<PageTitle>Home | All Blog Posts</PageTitle>
+
 
 @* <AuthorizeView Roles="Author, Moderator">
     @if(context.IsInRole("Author"))
 </AuthorizeView> *@
+
+<!-- Blog posts -->
+<div class="col-lg-9 pe-lg-4 pe-xl-5">
+    <h1 class="pb-3 pb-lg-4">Blog list with sidebar</h1>
+
+    <!-- Post -->
+    @foreach (BlogPostDTO blogPost in blogPosts)
+    {
+        <BlogCard BlogPost="blogPost" />
+    }
+</div>
+
+@code {
+    #region Parameter
+
+    #endregion
+
+    #region State
+
+    private IEnumerable<BlogPostDTO> blogPosts = [];
+    #endregion
+
+    #region Methods
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Get All Posts
+        blogPosts = await BlogPostService.GetAllBlogPostsAsync();
+    }
+    #endregion
+}

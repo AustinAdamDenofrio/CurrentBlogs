@@ -1,0 +1,103 @@
+﻿@page "/author/blogposts"
+
+@using CurrentBlogs.Client.Components.Helper
+@using CurrentBlogs.Client.Components.Services.Interfaces
+
+@attribute [Authorize(Roles = "Author")]
+
+@inject IBlogPostDTOService BlogService
+@rendermode InteractiveServer
+
+<PageTitle>Current Blogs | Categories</PageTitle>
+
+<div class="col-lg-9 pe-lg-4 pe-xl-5">
+
+    @*Add new BlogPosts*@
+    <div class="d-flex justify-content-center  justify-content-sm-end justify-content-md-start mb-3">
+        <a href="/blogposts/create" class="btn btn-primary ">
+            <i class="ai-arrow-down d-sm-none"> </i>
+            Add Blog Post
+            <i class="ai-arrow-down d-sm-none"> </i>
+        </a>
+    </div>
+
+
+
+
+
+    @*Generate BlogPosts on the Page*@
+    @foreach (BlogPostDTO blogPost in blogPosts)
+    {
+
+    @if (blogPost.IsDeleted == false)
+    {
+        @if (blogPost.IsPublished == true)
+        {
+            <div class="d-flex text-center">
+                <h1 class="">Published</h1>
+            </div>
+
+        }
+        else if (blogPost.IsPublished == false)
+        {
+            <div class="d-flex text-center">
+                <h1 class="">Draft</h1>
+            </div>
+
+        }
+    }
+    else
+    {
+        <div class="d-flex text-center">
+            <h1 class="">Deleted</h1>
+        </div>
+
+    }
+
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteCategory" />
+        </div>
+    }
+
+
+</div>
+
+@code {
+    #region Parameter
+
+    #endregion
+
+    #region State
+    private IEnumerable<BlogPostDTO> blogPosts = [];
+    private string? imageError;
+
+    //Toggles confirm deletion
+    bool isDeleting = false;
+    #endregion
+
+    #region Methods
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Get All Categories
+        blogPosts = await BlogService.GetAllBlogPostsAsync();
+    }
+
+
+    private async Task DeleteCategory(int blogPostId)
+    {
+        try
+        {
+            await BlogService.DeleteBlogPostAsync(blogPostId);
+
+            blogPosts = await BlogService.GetAllBlogPostsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    #endregion
+}

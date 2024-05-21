@@ -1,12 +1,15 @@
-﻿using CurrentBlogs.Data;
+﻿using CurrentBlogs.Client.Components.Pages.AuthorMenu;
+using CurrentBlogs.Data;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace CurrentBlogs.Services
 {
+
     public class BlogPostsRepository : IBlogPostsRepository
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
@@ -23,9 +26,10 @@ namespace CurrentBlogs.Services
             blogPost.Created = DateTime.Now;
             blogPost.Updated = DateTime.Now;
 
-            blogPost.Slug = await GenerateSlugAsync(blogPost.Title!, blogPost.Id); 
-            
+            blogPost.Slug = await GenerateSlugAsync(blogPost.Title!, blogPost.Id);
+
             context.Add(blogPost);
+
             await context.SaveChangesAsync();
             return blogPost;
         }
@@ -49,16 +53,13 @@ namespace CurrentBlogs.Services
                 while (isValid == false)
                 {
                     i++;
-                    newTitle = $"{title} {i}"; //my-first-blog-post-2
+                    newTitle = $"{title} {i}";
                     isValid = await ValidateSlugAsync(newTitle, id);
                 }
 
                 return Slugify(newTitle);
             }
-            //2: in not valid make a new one
-            //3: return a valid one
         }
-
 
         private async Task<bool> ValidateSlugAsync(string title, int blogId)
         {
@@ -76,7 +77,7 @@ namespace CurrentBlogs.Services
             else
             {
                 // this is an existing post. so see if any other posts hace this slug
-                isValid = !await context.BlogPosts.AnyAsync(bp => bp.Slug == newSlug && bp.Id == blogId);
+                isValid = !await context.BlogPosts.AnyAsync(bp => bp.Slug == newSlug && bp.Id != blogId);
             }
 
             return isValid;
@@ -90,14 +91,85 @@ namespace CurrentBlogs.Services
             char[] chars = title.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray();
 
             string normalizedTitle = new string(chars).Normalize(System.Text.NormalizationForm.FormC)
-                                                                .ToLower()
-                                                                .Trim();
+                                                                        .ToLower()
+                                                                        .Trim();
 
             string titleWithoutSymbols = Regex.Replace(normalizedTitle, @"[^A-Za-z0-9\s-]", "");
             string slug = Regex.Replace(titleWithoutSymbols, @"\s+", "-");
 
             return slug;
 
+        }
+        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            IEnumerable<BlogPost> posts = await context.BlogPosts
+                                                            .Include(bp => bp.Category)
+                                                            .ToListAsync();
+
+            return posts;
+        }
+
+        public async Task<BlogPost?> GetBlogPostByIdAsync(int blogPostId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            BlogPost? blogPost = await context.BlogPosts
+                                    .FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+            return blogPost;
+        }
+
+        public async Task UpdateBlogPostAsync(BlogPost blogPost)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            bool shouldUpdate = await context.BlogPosts.AnyAsync(bp => bp.Id == blogPost.Id);
+
+            if (shouldUpdate)
+            {
+                ImageUpload? oldImage = null;
+
+                if (blogPost.Image is not null)
+                {
+                    //save the new image
+                    context.Images.Add(blogPost.Image);
+
+                    //check for old image
+                    oldImage = await context.Images.FirstOrDefaultAsync(i => i.Id == blogPost.ImageId);
+
+                    //fix foreign key
+                    blogPost.ImageId = blogPost.Image.Id;
+                }
+
+                blogPost.Slug = await GenerateSlugAsync(blogPost.Title!, blogPost.Id);
+
+                context.BlogPosts.Update(blogPost);
+                await context.SaveChangesAsync();
+
+                if (oldImage is not null)
+                {
+                    context.Images.Remove(oldImage);
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task DeleteBlogPostAsync(int blogPostId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            BlogPost? blogPost = await context.BlogPosts.FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+            if (blogPost != null)
+            {
+                blogPost.IsPublished = false;
+                blogPost.IsDeleted = true;
+
+                context.BlogPosts.Update(blogPost);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

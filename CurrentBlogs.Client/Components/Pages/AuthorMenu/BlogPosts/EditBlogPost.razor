@@ -1,24 +1,22 @@
-﻿@page "/categories/edit/{id:int}"
+﻿@page "/blogpost/edit/{id:int}"
 @using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @attribute [Authorize]
 
 @inject NavigationManager Nav
-@inject ICategoryDTOService CategoryService
+@inject IBlogPostDTOService BlogService
 
-@if (category is not null)
+@if (blogPost is not null)
 {
 
-    <PageTitle>Cloud Contacts | @(string.IsNullOrEmpty(category?.Name) ? "Edit Category" : category.Name)</PageTitle>
+    <PageTitle>Cloud Contacts | @(string.IsNullOrEmpty(blogPost?.Title) ? "Edit Category" : blogPost.Title)</PageTitle>
 
 
 
     <div class="p-3 my-5 border-2 shadow-lg bg-light">
-        <CategoryForm 
-            Category="category"
-            OnSubmit="HandleSubmit" 
-            />
+        <BlogPostForm Post="blogPost"
+                      OnSubmit="HandleSubmit" />
     </div>
 
 }
@@ -36,13 +34,8 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private CategoryDTO? category;
+    private BlogPostDTO? blogPost;
     string errorMessage = string.Empty;
-
-    private UserInfo? userInfo;
-
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthStateTask { get; set; }
     #endregion
 
 
@@ -56,21 +49,18 @@ else
     {
         try
         {
-            //get user info
-            userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-
             //get the contact info by id from database
-            category = await CategoryService.GetCategoryByIdAsync(Id);
+            blogPost = await BlogService.GetBlogPostByIdAsync(Id);
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex);
-            category = null;
+            blogPost = null;
         }
 
-        if (category is null)
+        if (blogPost is null)
         {
-            Nav.NavigateTo("/categories");
+            Nav.NavigateTo("/author/blogposts");
         }
     }
 
@@ -80,9 +70,9 @@ else
         {
             errorMessage = string.Empty;
 
-            if (category is not null)
+            if (blogPost is not null)
             {
-                await CategoryService.UpdateCategoryAsync(category);
+                await BlogService.UpdateBlogPostAsync(blogPost);
             }
 
         }
@@ -90,12 +80,12 @@ else
         {
             Console.WriteLine(ex);
 
-            errorMessage = "An error occurred while trying to update this category";
+            errorMessage = "An error occurred while trying to update this blog post";
         }
 
         if (errorMessage == string.Empty)
         {
-            Nav.NavigateTo("/categories");
+            Nav.NavigateTo("/author/blogposts");
         }
     }
     #endregion
