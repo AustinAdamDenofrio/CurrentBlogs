@@ -13,7 +13,7 @@
             </div>
             @*Abstract*@
             <div class="mb-2">
-                <label class="form-label">Abstract</label>
+                <label class="form-label">Description</label>
                 <InputText class="form-control" @bind-Value="Post.Abstract"></InputText>
                 <ValidationMessage For="() => Post.Abstract" />
             </div>
@@ -30,7 +30,6 @@
                     }
 
                 </InputSelect>
-                <span class="text-danger">@categoryError </span>
                 <ValidationMessage For="() => Post.CategoryId" />
             </div>
             @*Image*@
@@ -69,13 +68,22 @@
                     Publish?
                 </label>
             </div>
-            @* Change location to author index for posts*@
-            <a type="button" class="btn btn-outline-secondary" href="/">
+            <a type="button" class="btn btn-outline-secondary me-2" href="/">
                 Cancel
             </a>
-            <button type="submit" class="btn btn-primary">
-                Save
-            </button>
+
+            @if (Post.IsPublished == false)
+            {
+                <button type="submit" class="btn btn-outline-primary">
+                    Save as Draft
+                </button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary">
+                    Save &amp; Publish 
+                </button>
+            }
         </div>
 
         <ValidationSummary />
@@ -147,8 +155,8 @@
 
     private async Task HandleSubmit()
     {
-        if (Post is not null && Post.CategoryId > 0)
-        {
+        // if (Post is not null && Post.CategoryId > 0)
+        // {
             try
             {
                 await OnSubmit.InvokeAsync(Post);
@@ -158,11 +166,11 @@
                 Console.WriteLine(ex);
             }
 
-        }
-        else
-        {
-            categoryError = "* Please select a category. Category is required.";
-        }
+        // }
+        // else
+        // {
+        //     categoryError = "* Please select a category. Category is required.";
+        // }
     }
 
     private async Task OnFileChange(InputFileChangeEventArgs changeEvent)

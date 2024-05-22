@@ -13,24 +13,67 @@
                     @BlogPost.Abstract
                 </p>
                 <div class="mb-3">
-                    @*Authorized users only*@
-                    @if (isDeleting == false)
-                    {
-                        <div class="fs-4 d-flex justify-content-start">
-                            <a class="me-3 editIcons" href="/blogpost/edit/@BlogPost.Id"><i class="ai-edit small"></i></a>
+                    @if(BlogPost.IsPublished == true && BlogPost.IsDeleted == false){
+                        @if (isDeleting == false)
+                        {
+                            <div class="fs-4 d-flex justify-content-start">
+                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">Edit</a>
 
-                            <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
-                                <i class="ai-trash text-danger small"></i>
-                            </a>
-                        </div>
+                                <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
+                                    <i class="ai-trash text-danger small"></i>
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-danger">Are you sure you want to delete this Contact?</div>
+                            <div class="">
+                                <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
+                                <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteBlogPostAsync(BlogPost.Id)">Delete</button>
+                            </div>
+                        }
                     }
-                    else
+                    else if (BlogPost.IsPublished == false && BlogPost.IsDeleted == false)
                     {
-                        <div class="text-danger">Are you sure you want to delete this Contact?</div>
-                        <div class="">
-                            <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
-                            <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteBlogPostAsync(BlogPost.Id)">Delete</button>
-                        </div>
+                        @if (isDeleting == false)
+                        {
+                            <div class="fs-4 d-flex justify-content-start ">
+                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">Edit</a>
+                                <a class="me-3 editIcons btn btn-outline-danger btn-sm" role="button" @onclick="() => isDeleting = true">
+                                    Delete
+                                </a>
+
+                                <a class="ms-auto btn btn-sm btn-outline-secondary" role="button" @onclick="() => BlogPost.IsPublished = true">Publish</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-danger">Are you sure you want to delete this Contact?</div>
+                            <div class="">
+                                <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
+                                <button class="btn btn-sm btn-danger me-1" @onclick="async () => await DeleteBlogPostAsync(BlogPost.Id)">Delete</button>
+                            </div>
+                        }
+                    }
+                    else if (BlogPost.IsDeleted == true)
+                    {
+                        @if (isDeleting == false)
+                        {
+                            <div class="fs-4 d-flex justify-content-start ">
+                                <a class="me-3 editIcons btn btn-primary btn-sm" role="button" @onclick="() => isDeleting = true">
+                                    Restore Post
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-danger">Are you sure you want to delete this Contact?</div>
+                            <div class="">
+                                <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
+                                @*Run a restore method that updates the blogpost, navigates blogpost page, and gets the updted blogs from db. This method needs to be injected*@
+                                <button class="btn btn-sm btn-danger me-1" role="button" @onclick="() => BlogPost.IsDeleted = false">Restore Post</button>
+                            </div>
+                        }
                     }
                 </div>
                 <div class="d-flex flex-wrap align-items-center mt-n2">
