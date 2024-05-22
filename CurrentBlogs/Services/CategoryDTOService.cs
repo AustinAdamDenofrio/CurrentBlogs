@@ -7,7 +7,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace CurrentBlogs.Services
 {
-    public class CategoryDTOService(ICategoryRepository repository) : ICategoryDTOService
+    public class CategoryDTOService(ICategoryRepository repository, IBlogPostDTOService BlogPostService) : ICategoryDTOService
     {
         public async Task<CategoryDTO> CreateCategoryAsync(CategoryDTO category)
         {
@@ -39,9 +39,9 @@ namespace CurrentBlogs.Services
         {
             IEnumerable<Category> createCategories = await repository.GetAllCategoriesAsync();
 
-            IEnumerable<CategoryDTO> categoryDTO = createCategories.Select(c => c.ToDTO());
-
-            return categoryDTO;
+            IEnumerable<CategoryDTO> categoriesDTO = createCategories.Select(c => c.ToDTO());
+            
+            return categoriesDTO;
         }
 
         //Validate the AppUser has permission to delete

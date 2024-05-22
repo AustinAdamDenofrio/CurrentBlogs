@@ -171,5 +171,59 @@ namespace CurrentBlogs.Services
                 await context.SaveChangesAsync();
             }
         }
+
+
+        #region
+        public async Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            TextInfo textInfo = new CultureInfo("en-US").TextInfo;
+
+            BlogPost? blogPost = await context.BlogPosts
+                                    .Include(bp => bp.Tags)
+                                    .FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+            if (blogPost is not null)
+            {
+                foreach(string tagName in tagNames)
+                {
+                    Tag? existingTag = await context.Tags.FirstOrDefaultAsync(t => t.Name!.Trim().ToLower() == tagName.Trim().ToLower());
+
+                    if (existingTag is not null) 
+                    { 
+                        blogPost.Tags.Add(existingTag);
+                    }
+                    else
+                    {
+                        string titleCaseTagName = textInfo.ToTitleCase(tagName.Trim());
+                        Tag newTag = new Tag() { Name = titleCaseTagName };
+
+                        context.Tags.Add(newTag);
+                        blogPost.Tags.Add(newTag);
+                    }
+                }
+
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task RemoveTagsFromBlogPostAsync(int blogPostId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            BlogPost? blogPost = await context.BlogPosts
+                                                .Include(bp => bp.Tags)
+                                                .FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+            if (blogPost is not null)
+            {
+                blogPost.Tags.Clear();
+                await context.SaveChangesAsync();
+
+                //TODO: remove any tags that have no posts???
+            }
+        }
+        #endregion
     }
 }

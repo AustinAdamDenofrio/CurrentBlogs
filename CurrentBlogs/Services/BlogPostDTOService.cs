@@ -39,9 +39,11 @@ namespace CurrentBlogs.Services
                     Console.WriteLine(ex);
                 }
             }
-
-            //TODO: tags???
             newPost = await _repository.CreateBlogPostAsync(newPost);
+
+            IEnumerable<string> tagNames = blogPostDTO.Tags.Select(t => t.Name!);
+            await _repository.AddTagsToBlogPostAsync(newPost.Id, tagNames);
+
             return newPost.ToDTO();
         }
 

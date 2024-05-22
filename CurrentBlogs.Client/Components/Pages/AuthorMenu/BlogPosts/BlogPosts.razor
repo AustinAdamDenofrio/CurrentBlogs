@@ -41,7 +41,7 @@
             {
                 <div @key="blogPost.Id">
                     <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteCategory" />
+                                        OnDelete="DeleteBlogPostAsync" />
                 </div>
             }
         }
@@ -52,7 +52,7 @@
             {
                 <div @key="blogPost.Id">
                     <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteCategory" />
+                                        OnDelete="DeleteBlogPostAsync" />
                 </div>
             }
         }
@@ -63,7 +63,8 @@
             {
                 <div @key="blogPost.Id">
                     <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteCategory" />
+                                        OnDelete="DeleteBlogPostAsync"
+                                        OnPublish="PublishBlogPostAsync" />
                 </div>
             }
         }
@@ -74,7 +75,8 @@
             {
                 <div @key="blogPost.Id">
                     <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteCategory" />
+                                        OnDelete="DeleteBlogPostAsync"
+                                        OnRestore="RestoreBlogPostAsync" />
                 </div>
             }
         }
@@ -126,7 +128,7 @@
     }
 
 
-    private async Task DeleteCategory(int blogPostId)
+    private async Task DeleteBlogPostAsync(int blogPostId)
     {
         try
         {
@@ -140,5 +142,33 @@
         }
     }
 
+
+    private async Task RestoreBlogPostAsync(BlogPostDTO formBlogPost)
+    {
+        try
+        {
+            await BlogService.UpdateBlogPostAsync(formBlogPost);
+
+            blogPosts = await BlogService.GetAllBlogPostsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task PublishBlogPostAsync(BlogPostDTO formBlogPost)
+    {
+        try
+        {
+            await BlogService.UpdateBlogPostAsync(formBlogPost);
+
+            blogPosts = await BlogService.GetAllBlogPostsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
     #endregion
 }

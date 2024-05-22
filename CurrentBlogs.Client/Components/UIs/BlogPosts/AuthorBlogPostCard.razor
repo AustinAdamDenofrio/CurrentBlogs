@@ -5,22 +5,52 @@
         </a>
         <div class="col-sm-7">
             <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4">
-                <h3>
-                    <a href="#">@BlogPost.Title</a>
-                </h3>
+                <div class="hstack">
+                    <h3 class="me-2">
+                        <a href="#">@BlogPost.Title</a>
+                    </h3>
+                    @if (BlogPost.IsPublished == true && BlogPost.IsDeleted == false)
+                    {
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-primary btn-sm mb-2 me-3">
+                                Published
+                            </a>
+                        </div>
+
+                    }
+                    else if (BlogPost.IsPublished == false && BlogPost.IsDeleted == false)
+                    {
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-outline-secondary btn-sm mb-2 me-3">
+                                Draft
+                            </a>
+                        </div>
+
+                    }
+                    else if (BlogPost.IsDeleted == true)
+                    {
+                        <div class="d-flex justify-content-end">
+                            <a class="btn btn-danger btn-sm mb-2 me-3">
+                                Deleted
+                            </a>
+                        </div>
+                    }
+                </div>
                 <p class="d-sm-none d-md-block">
                     @* Trailling if text is to large *@
                     @BlogPost.Abstract
                 </p>
                 <div class="mb-3">
-                    @if(BlogPost.IsPublished == true && BlogPost.IsDeleted == false){
+                    @if (BlogPost.IsPublished == true && BlogPost.IsDeleted == false)
+                    {
                         @if (isDeleting == false)
                         {
                             <div class="fs-4 d-flex justify-content-start">
-                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">Edit</a>
-
-                                <a class="me-3 editIcons" role="button" @onclick="() => isDeleting = true">
-                                    <i class="ai-trash text-danger small"></i>
+                                <a class="me-auto me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
+                                    Edit
+                                </a>
+                                <a class="me-3 editIcons btn btn-outline-danger btn-sm" role="button" @onclick="() => isDeleting = true">
+                                    Delete
                                 </a>
                             </div>
                         }
@@ -38,12 +68,16 @@
                         @if (isDeleting == false)
                         {
                             <div class="fs-4 d-flex justify-content-start ">
-                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">Edit</a>
+                                <a class="me-auto me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
+                                    Edit
+                                </a>
+                                <a class="me-3 btn btn-sm btn-outline-secondary" role="button" @onclick="async () => await PublishBlogPostAsync(BlogPost)">
+                                    Publish
+                                </a>
                                 <a class="me-3 editIcons btn btn-outline-danger btn-sm" role="button" @onclick="() => isDeleting = true">
                                     Delete
                                 </a>
 
-                                <a class="ms-auto btn btn-sm btn-outline-secondary" role="button" @onclick="() => BlogPost.IsPublished = true">Publish</a>
                             </div>
                         }
                         else
@@ -71,7 +105,7 @@
                             <div class="">
                                 <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
                                 @*Run a restore method that updates the blogpost, navigates blogpost page, and gets the updted blogs from db. This method needs to be injected*@
-                                <button class="btn btn-sm btn-danger me-1" role="button" @onclick="() => BlogPost.IsDeleted = false">Restore Post</button>
+                                <button class="btn btn-sm btn-danger me-1" role="button" @onclick="async () => await RestoreBlogPostAsync(BlogPost)">Restore Post</button>
                             </div>
                         }
                     }
@@ -86,7 +120,7 @@
                         <i class="ai-message fs-lg ms-1"></i>
                     </a>
                     <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                    <span class="fs-sm text-body-secondary mt-2">@BlogPost.Updated @*Format to only include hours*@ hours ago</span>
+                    @* <span class="fs-sm text-body-secondary mt-2">@BlogPost.Updated  hours ago</span> *@
                     <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
                     <a class="badge text-nav fs-xs border mt-2" href="#">
                         @BlogPost.Category?.Name
@@ -108,6 +142,13 @@
     [Parameter]
     public EventCallback<int> OnDelete { get; set; }
 
+    [Parameter]
+    public EventCallback<BlogPostDTO> OnRestore { get; set; }
+
+    [Parameter]
+    public EventCallback<BlogPostDTO> OnPublish { get; set; }
+
+
     #endregion
 
     #region State
@@ -125,5 +166,22 @@
         await OnDelete.InvokeAsync(BlogPost!.Id);
         isDeleting = false;
     }
+
+    private async Task RestoreBlogPostAsync(BlogPostDTO formBlogPost)
+    {
+        BlogPost!.IsDeleted = false;
+        BlogPost!.IsPublished = false;
+        await OnRestore.InvokeAsync(BlogPost);
+        isDeleting = false;
+    }
+
+    private async Task PublishBlogPostAsync(BlogPostDTO formBlogPost)
+    {
+        BlogPost!.IsDeleted = false;
+        BlogPost!.IsPublished = true;
+        await OnPublish.InvokeAsync(BlogPost);
+        isDeleting = false;
+    }
+
     #endregion
 }

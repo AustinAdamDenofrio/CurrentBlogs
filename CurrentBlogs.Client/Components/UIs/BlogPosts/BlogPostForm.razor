@@ -56,7 +56,8 @@
             @*tag*@
             <div class="mb-2">
                 <label class="form-label">Tags</label>
-                <input class="form-control" />
+                <input class="form-input" />
+                <InputText @bind-Value="tagNames" class="form-control" />
             </div>
         </div>
         <div class="col-12 text-end">
@@ -81,20 +82,14 @@
             else
             {
                 <button type="submit" class="btn btn-primary">
-                    Save &amp; Publish 
+                    Save &amp; Publish
                 </button>
             }
         </div>
 
         <ValidationSummary />
     </EditForm>
-    @*
-        TODO:
-        -Slug
-        -Updateddate
-        -Created
-        -IsDeleted
-    *@
+
 }
 
 
@@ -114,7 +109,7 @@
 
     private string? imageError;
 
-    private string? categoryError = null;
+    private string tagNames = string.Empty;
 
     // tinyMCE config
     private static readonly Dictionary<string, object> editorConfig = new()
@@ -155,22 +150,21 @@
 
     private async Task HandleSubmit()
     {
-        // if (Post is not null && Post.CategoryId > 0)
-        // {
-            try
-            {
-                await OnSubmit.InvokeAsync(Post);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
 
-        // }
-        // else
-        // {
-        //     categoryError = "* Please select a category. Category is required.";
-        // }
+        try
+        {
+            IEnumerable<string> listOfNames = tagNames.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+            Post!.Tags = [.. listOfNames.Select(name => new TagDTO() { Name = name })];
+
+            await OnSubmit.InvokeAsync(Post);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
+
     }
 
     private async Task OnFileChange(InputFileChangeEventArgs changeEvent)

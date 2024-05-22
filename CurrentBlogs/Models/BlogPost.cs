@@ -98,7 +98,7 @@ namespace CurrentBlogs.Models
 
             if (blogPost.Category is not null)
             {
-                blogPost.Category.BlogPosts.Clear();
+                blogPost.Category.BlogPosts = [];
                 
                 CategoryDTO categoryDTO = blogPost.Category.ToDTO();
                 dto.Category = categoryDTO;
