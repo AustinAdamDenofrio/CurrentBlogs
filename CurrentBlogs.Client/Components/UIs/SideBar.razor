@@ -16,11 +16,11 @@
             <div class="position-relative mb-4 mb-lg-5">
                 <i class="ai-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
                 <input class="form-control ps-5" type="search" placeholder="Enter keyword" />
-@*                 <form @onsubmit="HandleSearch">
-                    <div class="input-group">
-                        <InputText @bind-Value="searchInput" class="form-control" placeholder="Search" />
-                        <button class="btn btn-primary">Search</button>
-                    </div>
+                @*                 <form @onsubmit="HandleSearch">
+                <div class="input-group">
+                <InputText @bind-Value="searchInput" class="form-control" placeholder="Search" />
+                <button class="btn btn-primary">Search</button>
+                </div>
                 </form> *@
             </div>
 
@@ -30,7 +30,7 @@
                 <li class="mb-2">
                     <a class="nav-link d-flex p-0 active" href="#">
                         All categories
-                        <span class="fs-sm text-body-secondary ms-2">(@blogPosts.Count(c => c.IsPublished == true && c.IsDeleted == false))</span>
+                        <span class="fs-sm text-body-secondary ms-2">(@blogPosts.Data.Count(c => c.IsPublished == true && c.IsDeleted == false))</span>
                     </a>
                 </li>
                 @foreach (CategoryDTO trendingCategory in topCategories)
@@ -61,7 +61,7 @@
                             </h4>
                             <span class="fs-sm text-body-secondary">13 hours ago</span>
                         </div>
-                    </article>                    
+                    </article>
                 }
             </div>
 
@@ -81,11 +81,11 @@
 </aside>
 
 <!-- Sidebar toggle button -->
-<button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button"
+@* <button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button"
         data-bs-toggle="offcanvas" data-bs-target="#sidebarBlog">
     <i class="ai-layout-column me-2"></i>
     Sidebar
-</button>
+</button> *@
 
 @code {
 
@@ -94,7 +94,7 @@
     #endregion
 
     #region State
-    private IEnumerable<BlogPostDTO> blogPosts = [];
+    private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
     private IEnumerable<CategoryDTO> categories = [];
 
     private IEnumerable<CategoryDTO> topCategories = [];
@@ -109,12 +109,12 @@
         try
         {
             //Get All BlogPosts
-            blogPosts = await BlogService.GetAllBlogPostsAsync();
+            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
             //Get All Categories
             categories = await CategoryService.GetAllCategoriesAsync();
 
             topCategories = categories.OrderByDescending(c => c.BlogPosts.Count).Take(numberOfTrendingCategories);
-            topPosts = blogPosts.OrderByDescending(c => c.Comments.Count).Take(numberOfTrendingPosts);
+            topPosts = blogPosts.Data.OrderByDescending(c => c.Comments.Count).Take(numberOfTrendingPosts);
         }
         catch (Exception ex)
         {

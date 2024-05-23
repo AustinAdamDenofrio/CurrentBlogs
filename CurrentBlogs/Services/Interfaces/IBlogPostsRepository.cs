@@ -1,4 +1,5 @@
-﻿using CurrentBlogs.Models;
+﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Models;
 
 namespace CurrentBlogs.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace CurrentBlogs.Services.Interfaces
     {
         Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost);
 
-        Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync();
+        Task<PagedList<BlogPost>> GetPublishedBlogPostsAsync(int page, int pageSize);
 
         Task<BlogPost?> GetBlogPostByIdAsync(int blogPostId);
 

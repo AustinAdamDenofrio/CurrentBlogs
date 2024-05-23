@@ -1,55 +1,93 @@
 ﻿@page "/"
+@using CurrentBlogs.Components.Layout
+
+@layout SideBarLayout
 
 
 @inject IBlogPostDTOService BlogPostService
 
 <PageTitle>Home | All Blog Posts</PageTitle>
 
-
-@* <AuthorizeView Roles="Author, Moderator">
-    @if(context.IsInRole("Author"))
-</AuthorizeView> *@
-
 <!-- Blog posts -->
-<div class="row">
-    <div class="col-lg-9 pe-lg-4 pe-xl-5">
-        <h1 class="pb-3 pb-lg-4">All Blogs</h1>
 
-        <!-- Post -->
-        @foreach (BlogPostDTO blogPost in blogPosts)
-        {
-            @if (blogPost.IsPublished == true && blogPost.IsDeleted == false)
+<h1 class="pb-3 pb-lg-4">All Blogs</h1>
+
+<!-- Post -->
+@foreach (BlogPostDTO blogPost in blogPosts.Data)
+{
+    @if (blogPost.IsPublished == true && blogPost.IsDeleted == false)
+    {
+        <BlogCard BlogPost="blogPost" />
+    }
+}
+
+
+
+<div class="row gy-3 align-items-center mt-lg-5 pt-2 pt-md-3 pt-lg-0 mb-md-2 mb-xl-4">
+    <div class="col col-md-2 col-6 order-md-1 order-1">
+        <div class="d-flex align-items-center">
+            <span class="text-body-secondary fs-sm">Show</span>
+            <select class="form-select form-select-flush w-auto">
+                <option value="6">6</option>
+                <option value="9" selected>9</option>
+                <option value="12">12</option>
+                <option value="24">24</option>
+            </select>
+        </div>
+    </div>
+    <div class="col col-md-4 col-6 order-md-2 order-2">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm justify-content-end">
+                <li class="page-item active" aria-current="page">
+                    <span class="page-link">1<span class="visually-hidden">(current)</span></span>
+                </li>
+                <li class="page-item"><a class="page-link" href="/?page=2">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                <li class="page-item"><a class="page-link" href="#">5</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="col col-md col-12 order-md-2 order-3">
+        <div class="d-flex justify-content-end">
+            @if (Page > 1)
             {
-                 <BlogCard BlogPost="blogPost" />                
+                <a class="btn btn-outline-secondary w-md-auto w-100 btn-sm" href="/?page=@(Page - 1)" type="button">
+                    Previous page
+                </a>
             }
-        }
+            @if (Page < blogPosts.TotalPages)
+            {
+                <a class="btn btn-outline-secondary w-md-auto w-100 btn-sm ms-md-1" type="button" href="/?page=@(Page + 1)">
+                    Next page
+                </a>
+            }
+            <span class="badge text-bg-dark text-white d-flex align-items-center ms-md-1">Page @blogPosts.Page of @blogPosts.TotalPages</span>
+        </div>
     </div>
 </div>
 
-@* <a class="btn-scroll-top" href="#top" data-scroll aria-label="Scroll back to top">
-    <svg viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="20" r="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10">
-        </circle>
-    </svg>
-    <i class="ai-arrow-up"></i>
-</a> *@
 
 @code {
     #region Parameter
+    [SupplyParameterFromQuery]
+    public int Page { get; set; }
 
     #endregion
 
     #region State
 
-    private IEnumerable<BlogPostDTO> blogPosts = [];
+    private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
     #endregion
 
     #region Methods
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        if (Page < 1) Page = 1;
         //Get All Posts
-        blogPosts = await BlogPostService.GetAllBlogPostsAsync();
+        blogPosts = await BlogPostService.GetPublishedBlogPostsAsync(Page, 2);
     }
+
     #endregion
 }

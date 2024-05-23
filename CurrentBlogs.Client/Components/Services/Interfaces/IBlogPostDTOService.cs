@@ -7,7 +7,7 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
     {
         Task<BlogPostDTO> CreateBlogPostAsync(BlogPostDTO blogPostDTO);
 
-        Task<IEnumerable<BlogPostDTO>> GetAllBlogPostsAsync();
+        Task<PagedList<BlogPostDTO>> GetPublishedBlogPostsAsync(int page, int pageSize);
 
         Task<BlogPostDTO?> GetBlogPostBySlugAsync(string slug);
 

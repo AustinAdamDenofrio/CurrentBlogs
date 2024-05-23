@@ -2,104 +2,18 @@
 
 <main class="page-wrapper d-flex flex-column">
     <NavMenu />
-
     <!-- Page container -->
     <div class="container pt-5 pb-lg-5 pb-md-4 pb-2 my-5 flex-grow-1">
-
-        <div class="row">
-            <div class="col-lg-9 col-xl-8 pe-lg-4 pe-xl-0">
-                @Body
-            </div>
-
-            <SideBar></SideBar>
-@*             <aside class="col-lg-3 offset-xl-1">
-                <div class="offcanvas-lg offcanvas-end" id="sidebar">
-                    <div class="offcanvas-header">
-                        <h4 class="offcanvas-title">Sidebar</h4>
-                        <button class="btn-close ms-auto" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-
-                        <!-- Search box -->
-                        <div class="position-relative mb-4 mb-lg-5">
-                            <i class="ai-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
-                            <input class="form-control ps-5" type="search" placeholder="Enter keyword">
-                        </div>
-
-                        <!-- Popular posts -->
-                        <h4 class="pt-1 pt-lg-0 mt-lg-n2">Most popular:</h4>
-                        <div class="mb-lg-5 mb-4">
-                            <article class="position-relative pb-2 mb-3 mb-lg-4">
-                                <img class="rounded-5" src="assets/img/blog/list/01.jpg" alt="Post image">
-                                <h5 class="h6 mt-3 mb-0">
-                                    <a class="stretched-link" href="blog-single-v1.html">The fashion for eco bags with vintage prints will still be relevant for more than one year</a>
-                                </h5>
-                            </article>
-                            <article class="position-relative">
-                                <img class="rounded-5" src="assets/img/blog/list/06.jpg" alt="Post image">
-                                <h5 class="h6 mt-3 mb-0">
-                                    <a class="stretched-link" href="blog-single-v2.html">A session with a psychologist as a personal choice or a fashion trend</a>
-                                </h5>
-                            </article>
-                        </div>
-
-                        <!-- Recent posts -->
-                        <h4 class="pt-3 pt-lg-1 mb-4">Recent posts:</h4>
-                        <ul class="list-unstyled mb-lg-5 mb-4">
-                            <li class="border-bottom pb-3 mb-3">
-                                <span class="h6 mb-0">
-                                    <a href="blog-single-v1.html">Instagram trends that will definitely work and bring results in the new 2022</a>
-                                </span>
-                            </li>
-                            <li class="border-bottom pb-3 mb-3">
-                                <span class="h6 mb-0">
-                                    <a href="blog-single-v2.html">A session with a psychologist as a personal choice</a>
-                                </span>
-                            </li>
-                            <li class="border-bottom pb-3 mb-3">
-                                <span class="h6 mb-0">
-                                    <a href="blog-single-v1.html">Travel destinations to inspire and restore resources</a>
-                                </span>
-                            </li>
-                            <li class="border-bottom pb-3">
-                                <span class="h6 mb-0">
-                                    <a href="blog-single-v2.html">How to look for inspiration for new goals in life?</a>
-                                </span>
-                            </li>
-                        </ul>
-
-                        <!-- Relevant topics -->
-                        <h4 class="pt-3 pt-lg-1 mb-4">Relevant topics:</h4>
-                        <div class="d-flex flex-wrap mt-n3 ms-n3 mb-lg-5 mb-4 pb-3 pb-lg-0">
-                            <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">Reading</a>
-                            <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">Inspiration</a>
-                            <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">Travel</a>
-                            <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">Psychology</a>
-                        </div>
-                    </div>
-                </div>
-            </aside>
- *@        </div>
+        @Body
     </div>
-
-
-
-
     <Footer />
-
     <!-- Back to top button -->
-@*     <a class="btn-scroll-top" href="#top" data-scroll aria-label="Scroll back to top">
+    <a class="btn-scroll-top" href="#top" data-scroll aria-label="Scroll back to top">
         <svg viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <circle cx="20" cy="20" r="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10"></circle>
         </svg>
         <i class="ai-arrow-up"></i>
-    </a> *@
-
-          <!-- Sidebar toggle button -->
-      <button class="d-lg-none btn btn-sm fs-sm btn-primary w-100 rounded-0 fixed-bottom" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
-        <i class="ai-layout-column me-2"></i>
-        Sidebar
-      </button>
+    </a>
 </main>
 
 <div id="blazor-error-ui">

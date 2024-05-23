@@ -2,6 +2,7 @@
 using CurrentBlogs.Client.Components.Pages.AuthorMenu;
 using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
 using CurrentBlogs.Data;
+using CurrentBlogs.Helper.Extensions;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -106,13 +107,18 @@ namespace CurrentBlogs.Services
         }
 
         #endregion
-        public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
+
+
+        //Change name to just published
+        public async Task<PagedList<BlogPost>> GetPublishedBlogPostsAsync( int page, int pageSize)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
 
-            IEnumerable<BlogPost> posts = await context.BlogPosts
-                                                            .Include(bp => bp.Category)
-                                                            .ToListAsync();
+            PagedList<BlogPost> posts = await context.BlogPosts
+                                                            .Where(b => b.IsPublished && !b.IsDeleted)
+                                                            .Include(b => b.Category)
+                                                            .OrderByDescending(bp => bp.Created)
+                                                            .ToPagedListAsycn(page, pageSize);
 
             return posts;
         }
@@ -122,6 +128,7 @@ namespace CurrentBlogs.Services
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
 
             BlogPost? blogPost = await context.BlogPosts
+                                    .Include(bp => bp.Tags)
                                     .FirstOrDefaultAsync(bp => bp.Id == blogPostId);
 
             return blogPost;

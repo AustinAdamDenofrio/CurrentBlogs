@@ -56,7 +56,6 @@
             @*tag*@
             <div class="mb-2">
                 <label class="form-label">Tags</label>
-                <input class="form-input" />
                 <InputText @bind-Value="tagNames" class="form-control" />
             </div>
         </div>
@@ -147,6 +146,16 @@
             Console.WriteLine(ex);
         }
     }
+
+
+    protected override void OnParametersSet()
+    {
+        if (Post!.Tags is not null)
+        {
+            tagNames = string.Join(", ", Post.Tags.Select(t => t.Name));
+        }
+    }
+
 
     private async Task HandleSubmit()
     {

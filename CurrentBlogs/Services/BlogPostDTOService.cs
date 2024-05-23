@@ -4,7 +4,10 @@ using CurrentBlogs.Client.Components.Services.Interfaces;
 using CurrentBlogs.Helper;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NuGet.Protocol.Core.Types;
+using System.Drawing.Printing;
 
 namespace CurrentBlogs.Services
 {
@@ -52,11 +55,24 @@ namespace CurrentBlogs.Services
             await _repository.DeleteBlogPostAsync(blogPostId);
         }
 
-        public async Task<IEnumerable<BlogPostDTO>> GetAllBlogPostsAsync()
+        public async Task<PagedList<BlogPostDTO>> GetPublishedBlogPostsAsync(int page, int pageSize)
         {
-            IEnumerable<BlogPost> createPosts = await _repository.GetAllBlogPostsAsync();
+            PagedList<BlogPost> posts = await _repository.GetPublishedBlogPostsAsync(page, pageSize);
 
-            IEnumerable<BlogPostDTO> postsDTO = createPosts.Select(bp => bp.ToDTO());
+            PagedList<BlogPostDTO> postsDTO = new();
+
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data) 
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
 
             return postsDTO;
         }
@@ -84,6 +100,8 @@ namespace CurrentBlogs.Services
 
         public async Task UpdateBlogPostAsync(BlogPostDTO blogPostDTO)
         {
+            //remove tags from blogpost
+
             //get post from db that will be updated to a new value from the parameter
             BlogPost? blogPostToUpdate = await _repository.GetBlogPostByIdAsync(blogPostDTO.Id);
 
@@ -106,7 +124,10 @@ namespace CurrentBlogs.Services
                     blogPostToUpdate.Image = null;
                 }
 
-                // categoryToUpdate.Contacts.Clear();
+                blogPostToUpdate.Tags.Clear();
+
+                IEnumerable<string> tagNames = blogPostDTO.Tags.Select(t => t.Name!);
+                await _repository.AddTagsToBlogPostAsync(blogPostToUpdate.Id, tagNames);
 
                 await _repository.UpdateBlogPostAsync(blogPostToUpdate);
             }

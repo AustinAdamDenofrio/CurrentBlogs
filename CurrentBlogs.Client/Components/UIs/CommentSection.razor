@@ -1,0 +1,66 @@
+﻿ <!-- Comments -->
+<div class="pt-4 pt-xl-5 mt-4" id="comments">
+    <h2 class="h1 py-lg-1 py-xl-3">@blogPost.Comments.Count comments</h2>
+
+    <!-- Comment -->
+    <div class="border-bottom py-4 mt-2 mb-4">
+        <div class="d-flex align-items-center pb-1 mb-3">
+            <img class="rounded-circle" src="assets/img/avatar/08.jpg" width="48" alt="Comment author">
+            <div class="ps-3">
+                <h6 class="mb-0">Albert Flores</h6>
+                <span class="fs-sm text-body-secondary">5 hours ago</span>
+            </div>
+        </div>
+        <p class="pb-2 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tellus lectus, tempus eu urna eu, imperdiet dignissim augue. Aliquam fermentum est a ligula bibendum, ac gravida ipsum dictum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur suscipit quam ut velit condimentum, nec mollis risus semper. Curabitur quis mauris eget ligula tincidunt venenatis. Sed congue pulvinar hendrerit.</p>
+        <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button">
+            Reply
+            <i class="ai-redo fs-xl ms-2"></i>
+        </button>
+    </div>
+
+    <!-- All comments button -->
+    <div class="text-end pb-5 mb-lg-1 mb-xl-3">
+        <a class="btn btn-link px-0" href="#">
+            Show all comments
+            <i class="ai-chevron-right fs-lg ms-1"></i>
+        </a>
+    </div>
+
+
+    <!-- Comment form -->
+    <div class="card border-0 bg-secondary pt-2 p-md-2 p-xl-3 p-xxl-4 mt-n3 mt-md-0">
+        <div class="card-body">
+            <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
+            <form class="row needs-validation g-4" novalidate>
+                <div class="col-sm-6">
+                    <label class="form-label" for="c-name">Name</label>
+                    <input class="form-control" type="text" placeholder="Your name" required id="c-name">
+                    <div class="invalid-feedback">Please enter your name!</div>
+                </div>
+                <div class="col-sm-6">
+                    <label class="form-label" for="c-email">Email</label>
+                    <input class="form-control" type="email" placeholder="Your email" required id="c-email">
+                    <div class="invalid-feedback">Please provide a valid email address!</div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label" for="c-comment">Comment</label>
+                    <textarea class="form-control" rows="4" placeholder="Type your comment here..." required id="c-comment"></textarea>
+                    <div class="invalid-feedback">Please enter a comment message!</div>
+                </div>
+                <div class="col-12">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="c-save">
+                        <label class="form-check-label" for="c-save">Save my name and email</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-primary" type="submit">Post a comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

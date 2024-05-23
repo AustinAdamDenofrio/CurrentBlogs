@@ -10,90 +10,73 @@
 
 <PageTitle>Current Blogs | Categories</PageTitle>
 
-<div class="row">
-    <div class="col-lg-9 pe-lg-4 pe-xl-5">
-
         @*Add new BlogPosts*@
-        <div class="d-flex justify-content-center justify-content-sm-end justify-content-md-start mb-3">
-            <div class="btn-group me-auto">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                    View
-                </button>
-                <ul class="dropdown-menu bg-secondary">
-                    <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.All">View All</a></li>
-                    <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.Published">Published</a></li>
-                    <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.Drafts">Drafts</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item text-danger" role="button" @onclick="() => selectedView = SelectedView.Deleted">Recently Deleted</a></li>
-                </ul>
-            </div>
-            <a href="/blogposts/create" class="btn btn-primary ">
-                <i class="ai-arrow-down d-sm-none"> </i>
-                Add Post
-                <i class="ai-arrow-down d-sm-none"> </i>
-            </a>
-        </div>
+<div class="d-flex justify-content-center justify-content-sm-end justify-content-md-start mb-3">
+    <a href="/blogposts/create" class="btn btn-primary ">
+        <i class="ai-arrow-down d-sm-none"> </i>
+        Add Post
+        <i class="ai-arrow-down d-sm-none"> </i>
+    </a>
+    <div class="btn-group ms-auto">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            View
+        </button>
+        <ul class="dropdown-menu bg-secondary">
+            <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.All">View All</a></li>
+            <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.Published">Published</a></li>
+            <li><a class="dropdown-item" role="button" @onclick="() => selectedView = SelectedView.Drafts">Drafts</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" role="button" @onclick="() => selectedView = SelectedView.Deleted">Recently Deleted</a></li>
+        </ul>
+    </div>
+</div>
 
         @if (selectedView == SelectedView.All)
-        {
-            <h2 class="">Showing: All Posts </h2>
-            @foreach (BlogPostDTO blogPost in blogPosts.Where(bp => bp.IsDeleted == false))
-            {
-                <div @key="blogPost.Id">
-                    <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteBlogPostAsync" />
-                </div>
-            }
-        }
-        else if (selectedView == SelectedView.Published)
-        {
-            <h2 class="">Showing: Published </h2>
-            @foreach (BlogPostDTO blogPost in blogPosts.Where(bp => bp.IsDeleted == false && bp.IsPublished == true))
-            {
-                <div @key="blogPost.Id">
-                    <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteBlogPostAsync" />
-                </div>
-            }
-        }
-        else if (selectedView == SelectedView.Drafts)
-        {
-            <h2 class="">Showing: Drafts </h2>
-            @foreach (BlogPostDTO blogPost in blogPosts.Where(bp => bp.IsDeleted == false && bp.IsPublished == false))
-            {
-                <div @key="blogPost.Id">
-                    <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteBlogPostAsync"
-                                        OnPublish="PublishBlogPostAsync" />
-                </div>
-            }
-        }
-        else if (selectedView == SelectedView.Deleted)
-        {
-            <h2>Showing:<span class="text-danger"> Recently Deleted</span></h2>
-            @foreach (BlogPostDTO blogPost in blogPosts.Where(bp => bp.IsDeleted == true))
-            {
-                <div @key="blogPost.Id">
-                    <AuthorBlogPostCard BlogPost="blogPost"
-                                        OnDelete="DeleteBlogPostAsync"
-                                        OnRestore="RestoreBlogPostAsync" />
-                </div>
-            }
-        }
-
-
-    </div>
-
-    <SideBar></SideBar>
-
-    <a class="btn-scroll-top" href="#top" data-scroll aria-label="Scroll back to top">
-        <svg viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="20" cy="20" r="19" fill="none" stroke="currentColor" stroke-width="1.5" stroke-miterlimit="10">
-            </circle>
-        </svg>
-        <i class="ai-arrow-up"></i>
-    </a>
-</div>
+{
+    <h2 class="">Showing: All Posts </h2>
+    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false))
+    {
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteBlogPostAsync" />
+        </div>
+    }
+}
+else if (selectedView == SelectedView.Published)
+{
+    <h2 class="">Showing: Published </h2>
+    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false && bp.IsPublished == true))
+    {
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteBlogPostAsync" />
+        </div>
+    }
+}
+else if (selectedView == SelectedView.Drafts)
+{
+    <h2 class="">Showing: Drafts </h2>
+    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false && bp.IsPublished == false))
+    {
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteBlogPostAsync"
+                                OnPublish="PublishBlogPostAsync" />
+        </div>
+    }
+}
+else if (selectedView == SelectedView.Deleted)
+{
+    <h2>Showing:<span class="text-danger"> Recently Deleted</span></h2>
+    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == true))
+    {
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteBlogPostAsync"
+                                OnRestore="RestoreBlogPostAsync" />
+        </div>
+    }
+}
 
 
 @code {
@@ -102,7 +85,7 @@
     #endregion
 
     #region State
-    private IEnumerable<BlogPostDTO> blogPosts = [];
+    private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
     private string? imageError;
 
     //Toggles confirm deletion
@@ -124,7 +107,7 @@
     protected override async Task OnInitializedAsync()
     {
         //Get All Categories
-        blogPosts = await BlogService.GetAllBlogPostsAsync();
+        blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
     }
 
 
@@ -134,7 +117,7 @@
         {
             await BlogService.DeleteBlogPostAsync(blogPostId);
 
-            blogPosts = await BlogService.GetAllBlogPostsAsync();
+            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {
@@ -149,7 +132,7 @@
         {
             await BlogService.UpdateBlogPostAsync(formBlogPost);
 
-            blogPosts = await BlogService.GetAllBlogPostsAsync();
+            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {
@@ -163,7 +146,7 @@
         {
             await BlogService.UpdateBlogPostAsync(formBlogPost);
 
-            blogPosts = await BlogService.GetAllBlogPostsAsync();
+            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {
