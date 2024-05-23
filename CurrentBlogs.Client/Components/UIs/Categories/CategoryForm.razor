@@ -86,7 +86,7 @@
                 <div class="row my-3">
                     <div class="col-12 col-md-6">
                         <label class="form-label"> Image:  </label>
-                        <InputFile OnChange="OnFileChange" class="form-control" accept=".png, .jpg, .jpeg, .svg" />
+                        <InputFile OnChange="OnFileChange" class="form-control" accept=".png, .jpg, .jpeg, .svg, .webp" />
                         <span class="text-danger"> @imageError </span>
                     </div>
                     <div class="col-12 col-md-6 d-flex align-items-end justify-content-end">
@@ -143,7 +143,7 @@
 
         if (changeEvent.File is null)
         {
-            Category!.ImageUrl = ImageHelper.DefaultContactImage;
+            Category!.ImageUrl = ImageHelper.DefaultCategoryPicture;
         }
         else if (changeEvent.File.Size > ImageHelper.MaxFileSize)
         {

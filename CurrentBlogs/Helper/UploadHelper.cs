@@ -6,10 +6,9 @@ namespace CurrentBlogs.Helper
 {
     public class UploadHelper
     {
-        public static readonly string DefaultProfilePicture = ImageHelper.DefaultCategoryPicture;
-        public static readonly string DefaultBlogImage = ImageHelper.DefaultCategoryPicture;
-        public static readonly string DefaultContactImage = ImageHelper.DefaultContactImage;
-        public static readonly string DefaultProfileImage = ImageHelper.DefaultProfileImage;
+        public static readonly string DefaultProfilePicture = ImageHelper.DefaultProfileImage;
+        public static readonly string DefaultBlogImage = ImageHelper.DefaultBlogImage;
+        //public static readonly string DefaultProfileImage = ImageHelper.DefaultProfileImage;
         public static readonly int MaxFileSize = ImageHelper.MaxFileSize;
 
 
