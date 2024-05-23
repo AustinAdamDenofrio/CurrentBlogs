@@ -1,0 +1,125 @@
+﻿@inject ICategoryDTOService CategoryService
+@inject IBlogPostDTOService BlogService
+
+
+
+@*new*@
+<aside class="col-lg-3 offset-xl-1">
+    <div class="offcanvas-lg offcanvas-end" id="sidebar">
+        <div class="offcanvas-header">
+            <h4 class="offcanvas-title">Sidebar</h4>
+            <button class="btn-close ms-auto" type="button" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+
+            @* Get to know me *@
+            <div>
+                <div>
+                    <p class="lead">Austin Denofrio</p>
+                    <img class="portfolio-image" src="/api/uploads/author" />
+                </div>
+                <div class="d-flex mt-n3 ms-n3 mb-lg-5 mb-4 pb-3 pb-lg-0">
+                    <a class="btn btn-secondary btn-icon btn-sm btn-linkedin rounded-circle mt-3 ms-3" href="https://www.linkedin.com/in/austin-denofrio-286792223/" target="_blank" aria-label="LinkedIn">
+                        <i class="ai-linkedin"></i>
+                    </a>
+                    <a class="btn btn-secondary btn-icon btn-sm btn-github rounded-circle mt-3 ms-3" href="https://github.com/AustinAdamDenofrio" target="_blank" aria-label="Github">
+                        <i class="ai-github"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Search box -->
+            <div class="position-relative mb-4 mb-lg-5">
+                <i class="ai-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                <input class="form-control ps-5" type="search" placeholder="Enter keyword">
+            </div>
+
+            <!-- Popular posts -->
+            <h4 class="pt-1 pt-lg-0 mt-lg-n2">Most popular:</h4>
+            <div class="mb-lg-5 mb-4">
+                @foreach (BlogPostDTO topPost in topPosts)
+                {
+                    <article class="position-relative pb-2 mb-3 mb-lg-4">
+                        <img class="rounded-5" src="@topPost.ImageUrl" alt="Post image">
+                        <h5 class="h6 mt-3 mb-0">
+                            <a class="stretched-link" href="/posts/@topPost.Slug">@topPost.Title</a>
+                        </h5>
+                    </article>                    
+                }
+            </div>
+
+            <!-- Recent posts -->
+            <h4 class="pt-3 pt-lg-1 mb-4">Recent posts:</h4>
+            <ul class="list-unstyled mb-lg-5 mb-4">
+
+                <li class="border-bottom pb-3 mb-3">
+                    <span class="h6 mb-0">
+                        <a href="blog-single-v1.html">Instagram trends that will definitely work and bring results in the new 2022</a>
+                    </span>
+                </li>
+
+                <li class="border-bottom pb-3 mb-3">
+                    <span class="h6 mb-0">
+                        <a href="blog-single-v2.html">A session with a psychologist as a personal choice</a>
+                    </span>
+                </li>
+                <li class="border-bottom pb-3 mb-3">
+                    <span class="h6 mb-0">
+                        <a href="blog-single-v1.html">Travel destinations to inspire and restore resources</a>
+                    </span>
+                </li>
+                <li class="border-bottom pb-3">
+                    <span class="h6 mb-0">
+                        <a href="blog-single-v2.html">How to look for inspiration for new goals in life?</a>
+                    </span>
+                </li>
+            </ul>
+
+
+            <!-- Relevant topics -->
+            <h4 class="pt-3 pt-lg-1 mb-4">Relevant topics:</h4>
+            <div class="d-flex flex-wrap mt-n3 ms-n3 mb-lg-5 mb-4 pb-3 pb-lg-0">
+                @foreach (CategoryDTO topCategory in topCategories)
+                {
+                    <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">@topCategory.Name</a>
+                }
+            </div>
+
+        </div>
+    </div>
+</aside>
+@*end new*@
+
+
+
+@code {
+    #region Parameter
+
+    #endregion
+
+    #region State
+    private IEnumerable<CategoryDTO> topCategories = [];
+    private int numberOfPopularCategories = 3;
+
+    private IEnumerable<BlogPostDTO> topPosts = [];
+    private int numberOfPopularPosts = 4;
+    #endregion
+
+    #region Methods
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            topCategories = await CategoryService.GetTopCategoriesAsync(numberOfPopularCategories);
+            topPosts = await BlogService.GetTopBlogPostsAsync(numberOfPopularPosts);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+
+    #endregion
+
+}

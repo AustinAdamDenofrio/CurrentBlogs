@@ -28,7 +28,6 @@ namespace CurrentBlogs.Services
             return createdCategory.ToDTO();
         }
 
-
         //Pass user validation? UserID? Who can delete these?
         public async Task DeleteCategoryAsync(int categoryId)
         {
@@ -51,7 +50,16 @@ namespace CurrentBlogs.Services
             return category?.ToDTO();
         }
 
-        
+        public async Task<IEnumerable<CategoryDTO>> GetTopCategoriesAsync(int quantityOfTop)
+        {
+            IEnumerable<Category> createTopCategories = await repository.GetTopCategoriesAsync(quantityOfTop);
+
+            IEnumerable<CategoryDTO> categoriesTopDTO = createTopCategories.Select(c => c.ToDTO());
+
+            return categoriesTopDTO;
+        }
+
+
         //Validate the AppUser has permission to UpdateCategory
         public async Task UpdateCategoryAsync(CategoryDTO categoryDTO)
         {

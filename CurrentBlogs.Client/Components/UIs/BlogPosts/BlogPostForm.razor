@@ -21,7 +21,7 @@
             <div class="mb-2">
                 <label class="form-label">Category</label>
                 <InputSelect class="form-control" @bind-Value="Post.CategoryId">
-                    <option>Select a category...</option>
+                    <option value="0">Select a category...</option>
                     @foreach (CategoryDTO category in categories)
                     {
                         <option value="@category.Id">

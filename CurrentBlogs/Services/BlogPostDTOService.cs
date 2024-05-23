@@ -67,6 +67,21 @@ namespace CurrentBlogs.Services
             return blogPost?.ToDTO();
         }
 
+        public async Task<BlogPostDTO?> GetBlogPostBySlugAsync(string slug)
+        {
+            BlogPost? blogPost = await _repository.GetBlogPostBySlugAsync(slug);
+            return blogPost?.ToDTO();
+        }
+
+        public async Task<IEnumerable<BlogPostDTO>> GetTopBlogPostsAsync(int numberOfPopular)
+        {
+            IEnumerable<BlogPost> createTopPosts = await _repository.GetTopBlogPostsAsync(numberOfPopular);
+
+            IEnumerable<BlogPostDTO> topPostsDTO = createTopPosts.Select(bp => bp.ToDTO());
+
+            return topPostsDTO;
+        }
+
         public async Task UpdateBlogPostAsync(BlogPostDTO blogPostDTO)
         {
             //get post from db that will be updated to a new value from the parameter

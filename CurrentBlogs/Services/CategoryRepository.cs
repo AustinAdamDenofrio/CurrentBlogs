@@ -52,6 +52,20 @@ namespace CurrentBlogs.Services
             return category;
         }
 
+        public async Task<IEnumerable<Category>> GetTopCategoriesAsync(int quantityOfTop)
+        {
+            using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+
+            IEnumerable<Category> topCategories = await context.Categories
+                                    .Include(c => c.BlogPosts.Where(p => p.IsPublished == true && !p.IsDeleted))
+                                    .OrderByDescending(c => c.BlogPosts.Count())
+                                    .Take(quantityOfTop)
+                                    .ToListAsync();
+
+            return topCategories;
+        }
+
         //Validate the AppUser has permission to UpdateCategory
         public async Task UpdateCategoryAsync(Category category)
         {

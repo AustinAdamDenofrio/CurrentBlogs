@@ -1,4 +1,6 @@
-﻿using CurrentBlogs.Client.Components.Pages.AuthorMenu;
+﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Client.Components.Pages.AuthorMenu;
+using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
 using CurrentBlogs.Data;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
@@ -19,6 +21,8 @@ namespace CurrentBlogs.Services
             _dbContextFactory = dbContextFactory;
         }
 
+
+
         public async Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
@@ -33,7 +37,7 @@ namespace CurrentBlogs.Services
             await context.SaveChangesAsync();
             return blogPost;
         }
-
+        #region Slugify
         private async Task<string> GenerateSlugAsync(string title, int id)
         {
             // Somehow tate a title and make a slug? eg "My first post" => "my-first-post"
@@ -100,6 +104,8 @@ namespace CurrentBlogs.Services
             return slug;
 
         }
+
+        #endregion
         public async Task<IEnumerable<BlogPost>> GetAllBlogPostsAsync()
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
@@ -172,8 +178,21 @@ namespace CurrentBlogs.Services
             }
         }
 
+        public async Task<BlogPost?> GetBlogPostBySlugAsync(string slug)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+            BlogPost? blogPost = await context.BlogPosts
+                                    .Where(bp => bp.IsPublished == true && bp.IsDeleted == false)
+                                    .Include(bp => bp.Category)
+                                    .Include(bp => bp.Tags)
+                                    .Include(bp => bp.Comments)
+                                        .ThenInclude(c => c.Author)
+                                    .FirstOrDefaultAsync(bp => bp.Slug == slug);
 
-        #region
+            return blogPost;
+        }
+
+        #region Tags
         public async Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
@@ -224,6 +243,21 @@ namespace CurrentBlogs.Services
                 //TODO: remove any tags that have no posts???
             }
         }
+
+        public async Task<IEnumerable<BlogPost>> GetTopBlogPostsAsync(int numberOfPopular)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            IEnumerable<BlogPost> posts = await context.BlogPosts
+                                                       .Where(bp => bp.IsPublished == true && !bp.IsDeleted)
+                                                       .Include(bp => bp.Comments)
+                                                       .OrderByDescending(bp => bp.Comments.Count())
+                                                       .Take(numberOfPopular)
+                                                       .ToListAsync();
+
+            return posts;
+        }
+
         #endregion
     }
 }

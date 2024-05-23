@@ -6,7 +6,8 @@ namespace CurrentBlogs.Client.Components.Helper
     {
         public static readonly string DefaultCategoryPicture = "/images/Default_Category_Img.jpg";
         public static readonly string DefaultBlogImage = "/images/Default_Category_Img.jpg";
-        public static readonly string DefaultContactImage = "/img/DefaultContactPicture.png";
+        public static readonly string DefaultContactImage = "/images/DefaultContactPicture.png";
+        public static readonly string DefaultProfileImage = "/images/DefaultProfile.png";
         public static readonly int MaxFileSize = 5 * 1024 * 1024;
 
         public static async Task<string> GetDataUrl(IBrowserFile file)

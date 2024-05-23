@@ -14,9 +14,13 @@ namespace CurrentBlogs.Services.Interfaces
 
         Task DeleteBlogPostAsync(int blogPostId);
 
+        Task<BlogPost?> GetBlogPostBySlugAsync(string slug);
+
         Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames);
 
         Task RemoveTagsFromBlogPostAsync(int blogPostId);
+
+        Task<IEnumerable<BlogPost>> GetTopBlogPostsAsync(int numberOfPopular);
 
     }
 }

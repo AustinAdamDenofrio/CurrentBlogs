@@ -1,0 +1,192 @@
+﻿@page "/posts/{slug}"
+@using CurrentBlogs.Components.Layout
+
+@layout SideBarLayout
+
+@inject IBlogPostDTOService BlogService
+
+@if (blogPost is null)
+{
+    <PageTitle>Olympus | Not Found </PageTitle>
+
+    <div class="page-wrapper">
+        <div class="container d-flex flex-column justify-content-center min-vh-100 py-5">
+            <lottie-player src="assets/json/animation-404-light.json" class="d-dark-mode-none mt-n5" background="transparent" speed="1" loop autoplay></lottie-player>
+            <lottie-player class="d-none d-dark-mode-block mt-n5" src="assets/json/animation-404-dark.json" background="transparent" speed="1" loop autoplay></lottie-player>
+            <div class="text-center pt-4 mt-lg-2">
+                <h1 class="display-5">Page not found</h1>
+                <p class="fs-lg pb-2 pb-md-0 mb-4 mb-md-5">The page you are looking for was moved, removed or might never existed.</p>
+                <a class="btn btn-lg btn-primary" href="/">Go to homepage</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <PageTitle>Olympus | @blogPost.Title </PageTitle>
+
+
+
+    <!-- Post title + post meta -->
+    <h1 class="pb-2 pb-lg-3">@blogPost.Title</h1>
+    <div class="d-flex flex-wrap align-items-center justify-content-between border-bottom mb-4">
+        <div class="d-flex align-items-center mb-4 me-4">
+            <img src="/api/uploads/author" class="portfolio-image" />
+            <span class="fs-sm me-2">By:</span>
+            <a class="nav-link position-relative fw-semibold p-0" href="#author" data-scroll data-scroll-offset="80">
+                Austin Denofrio
+                <span class="d-block position-absolute start-0 bottom-0 w-100" style="background-color: currentColor; height: 1px;"></span>
+            </a>
+        </div>
+        <div class="d-flex align-items-center mb-4">
+            <span class="fs-sm me-2">Share post:</span>
+            <div class="d-flex">
+                <a class="nav-link p-2 me-2" href="https://www.linkedin.com/in/austin-denofrio-286792223/" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="LinkedIn" aria-label="LinkedIn">
+                    <i class="ai-linkedin"></i>
+                </a>
+                <a class="nav-link p-2 me-2" href="https://github.com/AustinAdamDenofrio" target="_blank" data-bs-toggle="tooltip" data-bs-placement="top" title="GitHub" aria-label="Github">
+                    <i class="ai-github"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <h1>@blogPost.Title</h1>
+    <p class="lead">@blogPost.Abstract</p>
+    <img class="img-fluid rounded-3 my-5" src="@blogPost.ImageUrl" />
+    <div class="post-content">
+        @((MarkupString)blogPost.Content!)
+    </div>
+
+    <div class="d-flex flex-wrap pb-5 pt-3 pt-md-4 pt-xl-5 mt-xl-n2">
+        <h3 class="h6 py-1 mb-0 me-4">Relevant tags:</h3>
+        @foreach (TagDTO tag in blogPost.Tags)
+        {
+            <a class="nav-link fs-sm py-1 px-0 me-3" href="#">
+                <span class="text-primary">#</span>@tag.Name
+            </a>
+        }
+    </div>
+
+
+
+    <!-- Author widget -->
+    <div class="border-top border-bottom py-4" id="author">
+        <div class="d-flex align-items-start py-2">
+            <img class="d-block rounded-circle mb-3" src="" width="56" alt="Author image">
+            <div class="d-md-flex w-100 ps-4">
+                <div style="max-width: 26rem;">
+                    <h3 class="h5 mb-2">Austin Denofrio</h3>
+                    <p class="fs-sm mb-0">Porta nisl a ultrices ut libero id. Gravida mi neque, tristique justo, et pharetra laoreet nulla est nulla cras ac arcu sed mattis tristique convallis suspen enim blandit massa cursus augue dui mattis morbi velit semper nunc at etiam lacinia.</p>
+                </div>
+                <div class="pt-4 pt-md-0 ps-md-4 ms-md-auto">
+                    <h3 class="h5">Share post:</h3>
+                    <div class="d-flex">
+                        <a class="nav-link p-2 me-2" href="https://github.com/AustinAdamDenofrio" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" title="LinkedIn" aria-label="LinkedIn">
+                            <i class="ai-linkedin"></i>
+                        </a>
+                        <a class="nav-link p-2 me-2" href="https://github.com/AustinAdamDenofrio" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom" title="GitHub" aria-label="Github">
+                            <i class="ai-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="pt-4 pt-xl-5 mt-4" id="comments">
+        <h2 class="h1 py-lg-1 py-xl-3">@blogPost.Comments.Count comments</h2>
+
+        <!-- Comment -->
+        <div class="border-bottom py-4 mt-2 mb-4">
+            <div class="d-flex align-items-center pb-1 mb-3">
+                <img class="rounded-circle" src="assets/img/avatar/08.jpg" width="48" alt="Comment author">
+                <div class="ps-3">
+                    <h6 class="mb-0">Albert Flores</h6>
+                    <span class="fs-sm text-body-secondary">5 hours ago</span>
+                </div>
+            </div>
+            <p class="pb-2 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tellus lectus, tempus eu urna eu, imperdiet dignissim augue. Aliquam fermentum est a ligula bibendum, ac gravida ipsum dictum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur suscipit quam ut velit condimentum, nec mollis risus semper. Curabitur quis mauris eget ligula tincidunt venenatis. Sed congue pulvinar hendrerit.</p>
+            <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button">
+                Reply
+                <i class="ai-redo fs-xl ms-2"></i>
+            </button>
+        </div>
+
+        <!-- All comments button -->
+        <div class="text-end pb-5 mb-lg-1 mb-xl-3">
+            <a class="btn btn-link px-0" href="#">
+                Show all comments
+                <i class="ai-chevron-right fs-lg ms-1"></i>
+            </a>
+        </div>
+
+
+        <!-- Comment form -->
+        <div class="card border-0 bg-secondary pt-2 p-md-2 p-xl-3 p-xxl-4 mt-n3 mt-md-0">
+            <div class="card-body">
+                <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
+                <form class="row needs-validation g-4" novalidate>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="c-name">Name</label>
+                        <input class="form-control" type="text" placeholder="Your name" required id="c-name">
+                        <div class="invalid-feedback">Please enter your name!</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label class="form-label" for="c-email">Email</label>
+                        <input class="form-control" type="email" placeholder="Your email" required id="c-email">
+                        <div class="invalid-feedback">Please provide a valid email address!</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="c-comment">Comment</label>
+                        <textarea class="form-control" rows="4" placeholder="Type your comment here..." required id="c-comment"></textarea>
+                        <div class="invalid-feedback">Please enter a comment message!</div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="c-save">
+                            <label class="form-check-label" for="c-save">Save my name and email</label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit">Post a comment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+
+
+@code {
+    #region Parameters
+    [Parameter]
+    public string? Slug { get; set; }
+    #endregion
+
+    #region State
+    private BlogPostDTO? blogPost;
+    #endregion
+
+
+    #region Methods
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(Slug))
+            {
+                blogPost = await BlogService.GetBlogPostBySlugAsync(Slug);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    #endregion
+}

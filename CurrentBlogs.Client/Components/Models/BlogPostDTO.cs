@@ -39,11 +39,9 @@ namespace CurrentBlogs.Client.Components.Models
 
         public bool IsDeleted { get; set; }
 
-        //Database Relationships/Navigation Poperties
+                 //Database Relationships/Navigation Poperties
         public string? ImageUrl { get; set; }
 
-
-        [Required]
         [Range(1, Int32.MaxValue, ErrorMessage = "A category must be selected.")]
         public int CategoryId { get; set; }
         public CategoryDTO? Category { get; set; }

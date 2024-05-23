@@ -9,5 +9,7 @@ namespace CurrentBlogs.Services.Interfaces
         Task<Category?> GetCategoryByIdAsync(int id);
         Task UpdateCategoryAsync(Category category);
         Task DeleteCategoryAsync(int categoryId);
+        Task<IEnumerable<Category>> GetTopCategoriesAsync(int quantityOfTop);
+
     }
 }

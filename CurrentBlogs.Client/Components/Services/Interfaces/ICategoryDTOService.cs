@@ -9,6 +9,6 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
         Task<CategoryDTO?> GetCategoryByIdAsync(int id);
         Task UpdateCategoryAsync(CategoryDTO category);
         Task DeleteCategoryAsync(int categoryId);
-
+        Task<IEnumerable<CategoryDTO>> GetTopCategoriesAsync(int quantityOfTop);
     }
 }
