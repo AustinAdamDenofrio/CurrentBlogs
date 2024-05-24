@@ -1,0 +1,86 @@
+﻿<!-- Comment form -->
+@if (Comment is not null)
+{
+    <div class="card border-0 bg-secondary pt-2 p-md-2 p-xl-3 p-xxl-4 mt-n3 mt-md-0">
+        <div class="card-body">
+            <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
+            <EditForm Model="Comment" OnValidSubmit="HandleSubmit" class="row needs-validation g-4">
+                <DataAnnotationsValidator />
+                <div class="row">
+                    <div class="col-12">
+                        <div class="flex-fill vstack">
+                            <label class="form-label"></label>
+                            <TinyMCE.Blazor.Editor ScriptSrc="/tinymce/tinymce.min.js"
+                                                   @bind-Value="Comment.Content"
+                                                   Field="() => Comment.Content"
+                                                   ClassName="rich-text-editor"
+                                                   Conf="editorConfig" />
+                            <ValidationMessage For="() => Comment.Content" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex justify-content-end">
+                            <button class="btn btn-primary mt-3" type="submit">Comment</button>
+                        </div>
+                    </div>
+                </div>
+                <ValidationSummary />
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    #region Parameter
+    [Parameter, EditorRequired]
+    public CommentDTO? Comment { get; set; }
+
+    [Parameter, EditorRequired]
+    public int PostId { get; set; }
+
+    [Parameter, EditorRequired]
+    public EventCallback<CommentDTO> OnSubmit { get; set; }
+    #endregion
+
+    #region State
+    // tinyMCE config
+    private static readonly Dictionary<string, object> editorConfig = new()
+    {
+        { "toolbar", "undo redo | bold italic underline | link codesample " },
+        { "plugins", "anchor autolink link charmap preview table codesample" },
+        { "default_link_target", "_blank" },
+        { "link_assume_external_targets", true },
+        { "link_context_toolbar", true },
+        { "codesample_languages", new object[] {
+                new { text = "HTML/XML", value = "markup" },
+                new { text = "JavaScript", value = "javascript" },
+                new { text = "CSS", value = "css" },
+                new { text = "C#", value = "csharp" },
+                new { text = "Razor", value = "razor" },
+                new { text = "JSON", value = "json" },
+    }
+        },
+        { "codesample_global_prismjs", true },
+        { "promotion", false },
+        { "height", "350px" },
+        //Try changing to a px or remove that section
+    };
+
+
+    #endregion
+
+
+    #region Methods
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            await OnSubmit.InvokeAsync(Comment);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    #endregion
+}

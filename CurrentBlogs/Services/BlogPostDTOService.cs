@@ -21,7 +21,6 @@ namespace CurrentBlogs.Services
 
 
 
-
         #region Get List of Items
         public async Task<PagedList<BlogPostDTO>> GetPublishedBlogPostsAsync(int page, int pageSize)
         {

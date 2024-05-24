@@ -103,6 +103,7 @@ namespace CurrentBlogs.Services
 
             BlogPost? blogPost = await context.BlogPosts
                                     .Include(bp => bp.Tags)
+                                    .Include(bp => bp.Comments)
                                     .FirstOrDefaultAsync(bp => bp.Id == blogPostId);
 
             return blogPost;

@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\CurrentBlogs.Client\Components\UIs\Comments\CreateForm.razor" Link="CreateForm.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CurrentBlogs.Client\CurrentBlogs.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.4" />

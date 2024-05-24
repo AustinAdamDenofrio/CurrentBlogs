@@ -5,19 +5,16 @@
     <EditForm Model="Post" OnValidSubmit="HandleSubmit" class="row">
         <DataAnnotationsValidator />
         <div class="col-lg-4">
-            @*Title*@
             <div class="mb-2">
                 <label class="form-label">Title</label>
                 <InputText class="form-control" @bind-Value="Post.Title"></InputText>
                 <ValidationMessage For="() => Post.Title" />
             </div>
-            @*Abstract*@
             <div class="mb-2">
                 <label class="form-label">Description</label>
                 <InputText class="form-control" @bind-Value="Post.Abstract"></InputText>
                 <ValidationMessage For="() => Post.Abstract" />
             </div>
-            @*Category*@
             <div class="mb-2">
                 <label class="form-label">Category</label>
                 <InputSelect class="form-control" @bind-Value="Post.CategoryId">
@@ -32,7 +29,6 @@
                 </InputSelect>
                 <ValidationMessage For="() => Post.CategoryId" />
             </div>
-            @*Image*@
             <div class="mb-2">
                 <img class="img-fluid rounded-5" style="max-height: 350px"
                      src="@(string.IsNullOrEmpty(Post.ImageUrl) ? ImageHelper.DefaultBlogImage : Post.ImageUrl)" />
@@ -41,8 +37,7 @@
             </div>
         </div>
         <div class="col-lg-8 vstack gap-2">
-            @*Post content and tags*@
-            <div class=" flex-fill vstack">
+            <div class="flex-fill vstack">
                 <label class="form-label">Content</label>
                 <TinyMCE.Blazor.Editor ScriptSrc="/tinymce/tinymce.min.js"
                                        @bind-Value="Post.Content"
@@ -50,8 +45,6 @@
                                        ClassName="rich-text-editor"
                                        Conf="editorConfig" />
                 <ValidationMessage For="() => Post.Content" />
-
-
             </div>
             @*tag*@
             <div class="mb-2">
@@ -60,7 +53,6 @@
             </div>
         </div>
         <div class="col-12 text-end">
-            @* IsPublished checkbox *@
             <div class="form-check">
                 <label class="form-check-label">
                     <InputCheckbox class="form-check-input" @bind-Value="Post.IsPublished">
@@ -85,7 +77,6 @@
                 </button>
             }
         </div>
-
         <ValidationSummary />
     </EditForm>
 
@@ -162,7 +153,6 @@
 
     private async Task HandleSubmit()
     {
-
         try
         {
             IEnumerable<string> listOfNames = tagNames.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
@@ -175,9 +165,8 @@
         {
             Console.WriteLine(ex);
         }
-
-
     }
+
 
     private async Task OnFileChange(InputFileChangeEventArgs changeEvent)
     {

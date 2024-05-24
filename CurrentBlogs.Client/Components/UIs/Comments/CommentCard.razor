@@ -1,0 +1,32 @@
+﻿@if (Comment is not null)
+{
+    <div class="border-bottom py-4 mt-2 mb-4">
+        <div class="d-flex align-items-center pb-1 mb-3">
+            <img class="rounded-circle" src="@Comment.AuthorImageUrl" width="48" alt="Comment author">
+            <div class="ps-3">
+                <h6 class="mb-0">@Comment.AuthorName</h6>
+                <span class="fs-sm text-body-secondary">5 hours ago</span>
+            </div>
+        </div>
+        <p class="pb-2 mb-0">@((MarkupString)Comment.Content!)</p>
+        <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button">
+            Reply
+            <i class="ai-redo fs-xl ms-2"></i>
+        </button>
+    </div>    
+}
+
+@code {
+    #region Parameter
+    [Parameter, EditorRequired]
+    public CommentDTO? Comment { get; set; }
+    #endregion
+
+    #region State
+    #endregion
+
+
+    #region Method
+    #endregion
+
+}

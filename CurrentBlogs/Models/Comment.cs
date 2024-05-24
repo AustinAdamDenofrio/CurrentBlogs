@@ -1,5 +1,6 @@
 ﻿using CurrentBlogs.Client.Components.Models;
 using CurrentBlogs.Data;
+using CurrentBlogs.Helper;
 using System.ComponentModel.DataAnnotations;
 
 namespace CurrentBlogs.Models
@@ -53,11 +54,9 @@ namespace CurrentBlogs.Models
                 UpdateReason = comment.UpdateReason,
                 AuthorId = comment.AuthorId,
                 AuthorName = comment.Author?.FullName,
-                AuthorImageUrl = comment.Author!.ImageId.HasValue ? $"/api/uploads/{comment.Author.ImageId}" : "",
+                AuthorImageUrl = comment.Author?.ImageId.HasValue == true ? $"/api/uploads/{comment.Author.ImageId}" : UploadHelper.DefaultProfilePicture,
                 BlogPostId = comment.BlogPostId,
             };
-
-
             return dto;
         }
     }

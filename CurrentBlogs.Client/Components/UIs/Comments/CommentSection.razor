@@ -1,0 +1,80 @@
+﻿@inject ICommentsDTOService CommentService
+
+ <!-- Comments -->
+@if (Comments is not null)
+{
+    <div class="pt-4 pt-xl-5 mt-4" id="comments">
+        <h2 class="h1 py-lg-1 py-xl-3"></h2>
+
+        <!-- Comment form -->
+        <CommentForm Comment="new CommentDTO()"
+                     OnSubmit="HandleSubmit"
+                     PostId="BlogPostId"/>
+
+        <!-- Comment -->
+        @foreach (CommentDTO comment in Comments)
+        {
+            <CommentCard Comment="comment" />
+        }
+
+        <!-- All comments button -->
+        <div class="text-end pb-5 mb-lg-1 mb-xl-3">
+            <a class="btn btn-link px-0" href="#">
+                Show all comments
+                <i class="ai-chevron-right fs-lg ms-1"></i>
+            </a>
+        </div>
+
+
+    </div>
+}
+
+@code {
+    #region Parameter
+    [Parameter, EditorRequired]
+    public IEnumerable<CommentDTO>? Comments { get; set; }
+
+
+    [Parameter, EditorRequired]
+    public int BlogPostId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthStateTask { get; set; }
+    #endregion
+
+
+
+    #region State
+    private UserInfo? userInfo;
+    string errorMessage = string.Empty;
+
+    #endregion
+
+
+
+
+    #region Methods
+    private async Task HandleSubmit(CommentDTO newComment)
+    {
+        try
+        {
+            if (newComment is not null)
+            {
+                userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+                newComment.BlogPostId = BlogPostId;
+                await CommentService.CreateCommentAsync(newComment, userInfo!.UserId);
+                //Update the list of Comments
+
+                // Nav.NavigateTo("/");
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            errorMessage = "An error occurred while trying to grab comments";
+        }
+    }
+
+    #endregion
+}

@@ -75,7 +75,6 @@ namespace CurrentBlogs.Models
                 Updated = blogPost.Updated,
                 IsPublished = blogPost.IsPublished,
                 IsDeleted = blogPost.IsDeleted,
-                //No default picture
                 ImageUrl = blogPost.ImageId.HasValue ? $"/api/uploads/{blogPost.ImageId}" : UploadHelper.DefaultBlogImage,
                 CategoryId = blogPost.CategoryId,
             };
@@ -84,8 +83,11 @@ namespace CurrentBlogs.Models
                 
 
             //ToDo: Comments
+ 
+
             foreach (Comment comment in blogPost.Comments)
             {
+                blogPost.Comments = [];
                 dto.Comments.Add(comment.ToDTO());
             }
 

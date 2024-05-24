@@ -52,6 +52,9 @@ builder.Services.AddScoped<ICategoryDTOService, CategoryDTOService>();
 builder.Services.AddScoped<IBlogPostsRepository, BlogPostsRepository>();
 builder.Services.AddScoped<IBlogPostDTOService, BlogPostDTOService>();
 
+builder.Services.AddScoped<ICommentsRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentsDTOService, CommentDTOService>();
+
 
 
 var app = builder.Build();

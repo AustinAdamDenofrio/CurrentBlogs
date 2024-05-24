@@ -95,38 +95,9 @@ else
     </div>
 
     <!-- Comments -->
-    <div class="pt-4 pt-xl-5 mt-4" id="comments">
-        <h2 class="h1 py-lg-1 py-xl-3">@blogPost.Comments.Count comments</h2>
-
-        <!-- Comment -->
-        <div class="border-bottom py-4 mt-2 mb-4">
-            <div class="d-flex align-items-center pb-1 mb-3">
-                <img class="rounded-circle" src="assets/img/avatar/08.jpg" width="48" alt="Comment author">
-                <div class="ps-3">
-                    <h6 class="mb-0">Albert Flores</h6>
-                    <span class="fs-sm text-body-secondary">5 hours ago</span>
-                </div>
-            </div>
-            <p class="pb-2 mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tellus lectus, tempus eu urna eu, imperdiet dignissim augue. Aliquam fermentum est a ligula bibendum, ac gravida ipsum dictum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Curabitur suscipit quam ut velit condimentum, nec mollis risus semper. Curabitur quis mauris eget ligula tincidunt venenatis. Sed congue pulvinar hendrerit.</p>
-            <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button">
-                Reply
-                <i class="ai-redo fs-xl ms-2"></i>
-            </button>
-        </div>
-
-        <!-- All comments button -->
-        <div class="text-end pb-5 mb-lg-1 mb-xl-3">
-            <a class="btn btn-link px-0" href="#">
-                Show all comments
-                <i class="ai-chevron-right fs-lg ms-1"></i>
-            </a>
-        </div>
-
-
-        <!-- Comment form -->
-        <CommentSection @rendermode="InteractiveServer"/>
-
-    </div>
+    <CommentSection @rendermode="InteractiveServer" 
+                    Comments="blogPost.Comments"
+                    BlogPostId="blogPost.Id" />
 
 
 }

@@ -5,33 +5,40 @@ namespace CurrentBlogs.Services.Interfaces
 {
     public interface IBlogPostsRepository
     {
-        Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost);
 
-        Task UnpublishBlogPostAsync(int blogPostId);
-
-        Task PublishBlogPostAsync(int blogPostId);
-
+        #region Get List
         Task<PagedList<BlogPost>> GetPublishedBlogPostsAsync(int page, int pageSize);
-
         Task<PagedList<BlogPost>> GetDraftPostsAsync(int page, int pageSize);
-
         Task<PagedList<BlogPost>> GetDeletedPostsAsync(int page, int pageSize);
-
-        Task<BlogPost?> GetAnyBlogPostByIdAsync(int blogPostId);
-
-        Task UpdateBlogPostAsync(BlogPost blogPost);
-
-        Task DeleteBlogPostAsync(int blogPostId);
-
-        Task RestoreDeletedBlogPostAsync(int blogPostId);
-
-        Task<BlogPost?> GetPublishedBlogPostBySlugAsync(string slug);
-
-        Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames);
-
-        Task RemoveTagsFromBlogPostAsync(int blogPostId);
-
         Task<IEnumerable<BlogPost>> GetTopBlogPostsAsync(int numberOfPopular);
+        #endregion
+
+
+
+
+        #region Get Item
+        Task<BlogPost?> GetAnyBlogPostByIdAsync(int blogPostId);
+        Task<BlogPost?> GetPublishedBlogPostBySlugAsync(string slug);
+        #endregion
+
+
+
+
+        #region Update BlogPost DB item
+        Task<BlogPost> CreateBlogPostAsync(BlogPost blogPost);
+        Task UpdateBlogPostAsync(BlogPost blogPost);
+        Task PublishBlogPostAsync(int blogPostId);
+        Task UnpublishBlogPostAsync(int blogPostId);
+        Task DeleteBlogPostAsync(int blogPostId);
+        Task RestoreDeletedBlogPostAsync(int blogPostId);
+        #endregion
+
+
+        #region Update Tags DB Item
+        Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames);
+        Task RemoveTagsFromBlogPostAsync(int blogPostId);
+        #endregion
+
 
     }
 }
