@@ -22,7 +22,7 @@
                 <label class="form-label">Category</label>
                 <InputSelect class="form-control" @bind-Value="Post.CategoryId">
                     <option value="0">Select a category...</option>
-                    @foreach (CategoryDTO category in categories)
+                    @foreach (CategoryDTO category in categories.Data)
                     {
                         <option value="@category.Id">
                             @category.Name
@@ -104,11 +104,14 @@
     #endregion
 
     #region State
-    private IEnumerable<CategoryDTO> categories = [];
+    private PagedList<CategoryDTO> categories = new PagedList<CategoryDTO>();
 
     private string? imageError;
 
     private string tagNames = string.Empty;
+
+    private int page = 1;
+    private int pageSize = 10;
 
     // tinyMCE config
     private static readonly Dictionary<string, object> editorConfig = new()
@@ -139,7 +142,7 @@
     {
         try
         {
-            categories = await CategoryService.GetAllCategoriesAsync();
+            categories = await CategoryService.GetAllCategoriesAsync(page, pageSize);
         }
         catch (Exception ex)
         {

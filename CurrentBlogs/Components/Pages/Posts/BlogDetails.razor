@@ -31,7 +31,7 @@ else
     <h1 class="pb-2 pb-lg-3">@blogPost.Title</h1>
     <div class="d-flex flex-wrap align-items-center justify-content-between border-bottom mb-4">
         <div class="d-flex align-items-center mb-4 me-4">
-            <img src="/api/uploads/author" class="portfolio-image" />
+            <img src="/api/uploads/author" class="portfolio-image me-3" />
             <span class="fs-sm me-2">By:</span>
             <a class="nav-link position-relative fw-semibold p-0" href="#author" data-scroll data-scroll-offset="80">
                 Austin Denofrio
@@ -73,7 +73,7 @@ else
     <!-- Author widget -->
     <div class="border-top border-bottom py-4" id="author">
         <div class="d-flex align-items-start py-2">
-            <img class="d-block rounded-circle mb-3" src="" width="56" alt="Author image">
+            <img class="d-block rounded-circle mb-3" src="/api/uploads/author" width="56" alt="Author image">
             <div class="d-md-flex w-100 ps-4">
                 <div style="max-width: 26rem;">
                     <h3 class="h5 mb-2">Austin Denofrio</h3>
@@ -151,7 +151,7 @@ else
         {
             if (!string.IsNullOrEmpty(Slug))
             {
-                blogPost = await BlogService.GetBlogPostBySlugAsync(Slug);
+                blogPost = await BlogService.GetPublishedBlogPostBySlugAsync(Slug);
             }
         }
         catch (Exception ex)

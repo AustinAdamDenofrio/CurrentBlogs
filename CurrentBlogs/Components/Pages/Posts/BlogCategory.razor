@@ -1,0 +1,44 @@
+﻿@page "/blogPosts/{id:int}"
+
+@inject ICategoryDTOService CategoryService
+<h3>BlogCategory</h3>
+
+@foreach(BlogPostDTO post in category.BlogPosts)
+{
+    <p>
+    @post.Abstract
+
+    </p>
+}
+
+@code {
+    #region  Parameter
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+    #endregion
+
+
+    #region State
+    private CategoryDTO category = new CategoryDTO();
+    #endregion
+
+
+
+    #region Method
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            
+        category = await CategoryService.GetCategoryByIdAsync(Id);
+
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
+    }
+    #endregion
+}

@@ -1,4 +1,6 @@
-﻿using CurrentBlogs.Data;
+﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Data;
+using CurrentBlogs.Helper.Extensions;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -7,51 +9,19 @@ namespace CurrentBlogs.Services
 {
     public class CategoryRepository(IDbContextFactory<ApplicationDbContext> contextFactory) : ICategoryRepository
     {
-        public async Task<Category> CreateCategoryAsync(Category category)
+
+        #region Get Item List
+        public async Task<PagedList<Category>> GetAllCategoriesAsync(int page, int pageSize)
         {
             using ApplicationDbContext context = contextFactory.CreateDbContext();
 
-            context.Categories.Add(category);
-            await context.SaveChangesAsync();
-
-            return category;
-        }
-
-        //Validate the AppUser has permission to delete
-        public async Task DeleteCategoryAsync(int categoryId)
-        {
-            using ApplicationDbContext context = contextFactory.CreateDbContext();
-
-            Category? category = await context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
-
-            if (category != null)
-            {
-                context.Categories.Remove(category);
-                await context.SaveChangesAsync();
-            }
-        }
-
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
-        {
-            using ApplicationDbContext context = contextFactory.CreateDbContext();
-
-            IEnumerable<Category> categories = await context.Categories
+            PagedList<Category> categories = await context.Categories
                                                             .Include(c => c.BlogPosts)
-                                                            .ToListAsync();
+                                                            .OrderBy(bp => bp.Name)
+                                                            .ToPagedListAsync(page, pageSize);
 
             return categories;
         }
-
-        public async Task<Category?> GetCategoryByIdAsync(int id)
-        {
-            using ApplicationDbContext context = contextFactory.CreateDbContext();
-
-            Category? category = await context.Categories
-                                    .FirstOrDefaultAsync(c => c.Id == id);
-
-            return category;
-        }
-
         public async Task<IEnumerable<Category>> GetTopCategoriesAsync(int quantityOfTop)
         {
             using ApplicationDbContext context = contextFactory.CreateDbContext();
@@ -65,8 +35,35 @@ namespace CurrentBlogs.Services
 
             return topCategories;
         }
+        #endregion
 
-        //Validate the AppUser has permission to UpdateCategory
+
+
+        #region Get Item
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Category? category = await context.Categories
+                                    .Include (c => c.BlogPosts)
+                                    .FirstOrDefaultAsync(c => c.Id == id);
+
+            return category;
+        }
+        #endregion
+
+
+
+        #region Update DB Items
+        public async Task<Category> CreateCategoryAsync(Category category)
+        {
+            using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            context.Categories.Add(category);
+            await context.SaveChangesAsync();
+
+            return category;
+        }
         public async Task UpdateCategoryAsync(Category category)
         {
             using ApplicationDbContext context = contextFactory.CreateDbContext();
@@ -99,5 +96,19 @@ namespace CurrentBlogs.Services
                 }
             }
         }
+        public async Task DeleteCategoryAsync(int categoryId)
+        {
+            using ApplicationDbContext context = contextFactory.CreateDbContext();
+
+            Category? category = await context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+
+            if (category != null)
+            {
+                context.Categories.Remove(category);
+                await context.SaveChangesAsync();
+            }
+        }
+        #endregion
+
     }
 }

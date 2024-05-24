@@ -18,6 +18,106 @@ namespace CurrentBlogs.Services
         { 
             _repository = repository;
         }
+
+
+
+
+        #region Get List of Items
+        public async Task<PagedList<BlogPostDTO>> GetPublishedBlogPostsAsync(int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.GetPublishedBlogPostsAsync(page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data) 
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
+        }
+        public async Task<PagedList<BlogPostDTO>> GetDraftPostsAsync(int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.GetDraftPostsAsync(page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data)
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
+        }
+        public async Task<PagedList<BlogPostDTO>> GetDeletedPostsAsync(int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.GetDeletedPostsAsync(page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data)
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
+        }
+
+        public async Task<IEnumerable<BlogPostDTO>> GetTopBlogPostsAsync(int numberOfPopular)
+        {
+            IEnumerable<BlogPost> createTopPosts = await _repository.GetTopBlogPostsAsync(numberOfPopular);
+
+            IEnumerable<BlogPostDTO> topPostsDTO = createTopPosts.Select(bp => bp.ToDTO());
+
+            return topPostsDTO;
+        }
+        #endregion
+
+
+
+
+
+        #region Get Individual Item
+        public async Task<BlogPostDTO?> GetAnyBlogPostByIdAsync(int blogPostId)
+        {
+            BlogPost? blogPost = await _repository.GetAnyBlogPostByIdAsync(blogPostId);
+            return blogPost?.ToDTO();
+        }
+        public async Task<BlogPostDTO?> GetPublishedBlogPostBySlugAsync(string slug)
+        {
+            BlogPost? blogPost = await _repository.GetPublishedBlogPostBySlugAsync(slug);
+            return blogPost?.ToDTO();
+        }
+        #endregion
+
+
+
+
+        #region Update DB Item
         public async Task<BlogPostDTO> CreateBlogPostAsync(BlogPostDTO blogPostDTO)
         {
             BlogPost newPost = new BlogPost()
@@ -49,61 +149,12 @@ namespace CurrentBlogs.Services
 
             return newPost.ToDTO();
         }
-
-        public async Task DeleteBlogPostAsync(int blogPostId)
-        {
-            await _repository.DeleteBlogPostAsync(blogPostId);
-        }
-
-        public async Task<PagedList<BlogPostDTO>> GetPublishedBlogPostsAsync(int page, int pageSize)
-        {
-            PagedList<BlogPost> posts = await _repository.GetPublishedBlogPostsAsync(page, pageSize);
-
-            PagedList<BlogPostDTO> postsDTO = new();
-
-            postsDTO.TotalPages = posts.TotalPages;
-            postsDTO.TotalItems = posts.TotalItems;
-            postsDTO.Page = posts.Page;
-
-            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
-
-            foreach (BlogPost blogPost in posts.Data) 
-            {
-                dtos.Add(blogPost.ToDTO());
-            }
-
-            postsDTO.Data = dtos;
-
-            return postsDTO;
-        }
-
-        public async Task<BlogPostDTO?> GetBlogPostByIdAsync(int blogPostId)
-        {
-            BlogPost? blogPost = await _repository.GetBlogPostByIdAsync(blogPostId);
-            return blogPost?.ToDTO();
-        }
-
-        public async Task<BlogPostDTO?> GetBlogPostBySlugAsync(string slug)
-        {
-            BlogPost? blogPost = await _repository.GetBlogPostBySlugAsync(slug);
-            return blogPost?.ToDTO();
-        }
-
-        public async Task<IEnumerable<BlogPostDTO>> GetTopBlogPostsAsync(int numberOfPopular)
-        {
-            IEnumerable<BlogPost> createTopPosts = await _repository.GetTopBlogPostsAsync(numberOfPopular);
-
-            IEnumerable<BlogPostDTO> topPostsDTO = createTopPosts.Select(bp => bp.ToDTO());
-
-            return topPostsDTO;
-        }
-
         public async Task UpdateBlogPostAsync(BlogPostDTO blogPostDTO)
         {
             //remove tags from blogpost
 
             //get post from db that will be updated to a new value from the parameter
-            BlogPost? blogPostToUpdate = await _repository.GetBlogPostByIdAsync(blogPostDTO.Id);
+            BlogPost? blogPostToUpdate = await _repository.GetAnyBlogPostByIdAsync(blogPostDTO.Id);
 
             if (blogPostToUpdate is not null)
             {
@@ -132,6 +183,35 @@ namespace CurrentBlogs.Services
                 await _repository.UpdateBlogPostAsync(blogPostToUpdate);
             }
         }
+        public async Task PublishBlogPostAsync(int blogPostId)
+        {
+            await _repository.PublishBlogPostAsync(blogPostId);
+        }
+        public async Task UnpublishBlogPostAsync(int blogPostId)
+        {
+            await _repository.UnpublishBlogPostAsync(blogPostId);
+        }
+        public async Task DeleteBlogPostAsync(int blogPostId)
+        {
+            await _repository.DeleteBlogPostAsync(blogPostId);
+        }
+        public async Task RestoreDeletedBlogPostAsync(int blogPostId)
+        {
+            await _repository.RestoreDeletedBlogPostAsync(blogPostId);
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 

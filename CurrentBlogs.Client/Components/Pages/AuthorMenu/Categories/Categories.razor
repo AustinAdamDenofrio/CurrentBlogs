@@ -19,7 +19,7 @@
 </div>
 
     @*Generate Categories on the Page*@
-    @foreach (CategoryDTO category in categories)
+    @foreach (CategoryDTO category in categories.Data)
 {
     <div @key="category.Id">
         <AuthorCategoryCard Category="category"
@@ -32,19 +32,15 @@
 @code {
     #region Parameter
 
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthStateTask { get; set; }
-
     #endregion
 
     #region State
-
-    private UserInfo? userInfo;
-
     private CategoryDTO formCategory = new CategoryDTO();
-    private IEnumerable<CategoryDTO> categories = [];
+    private PagedList<CategoryDTO> categories = new PagedList<CategoryDTO>();
 
-    private string? imageError;
+    private int page = 1;
+    private int pageSize = 10;
+
 
     //Toggles confirm deletion
     bool isDeleting = false;
@@ -54,9 +50,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-        //Get All Categories
-        categories = await CategoryService.GetAllCategoriesAsync();
+        try
+        {
+            categories = await CategoryService.GetAllCategoriesAsync(page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
 
@@ -66,7 +67,7 @@
         {
             await CategoryService.DeleteCategoryAsync(categoryId);
 
-            categories = await CategoryService.GetAllCategoriesAsync();
+            categories = await CategoryService.GetAllCategoriesAsync(page, pageSize);
         }
         catch (Exception ex)
         {

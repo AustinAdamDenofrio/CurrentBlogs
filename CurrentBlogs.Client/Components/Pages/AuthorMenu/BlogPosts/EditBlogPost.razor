@@ -50,7 +50,7 @@ else
         try
         {
             //get the contact info by id from database
-            blogPost = await BlogService.GetBlogPostByIdAsync(Id);
+            blogPost = await BlogService.GetAnyBlogPostByIdAsync(Id);
         }
         catch (Exception ex)
         {

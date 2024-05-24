@@ -1,6 +1,7 @@
 ﻿@implements IDisposable
 
 @inject NavigationManager NavigationManager
+@inject ICategoryDTOService CategoryService
 
 
 <!-- Navbar. Remove 'fixed-top' class to make the navigation bar scrollable with the page -->
@@ -22,8 +23,8 @@
         </button>
 
         <!-- Navbar collapse (Main navigation) -->
-        <nav class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav navbar-nav-scroll me-auto" style="--ar-scroll-height: 520px;">
+        <nav class="collapse navbar-collapse d-flex" id="navbarNav">
+            <ul class="navbar-nav navbar-nav-scroll  d-flex flex-grow-1" style="--ar-scroll-height: 520px;">
 
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/" Match="NavLinkMatch.All"> 
@@ -33,14 +34,16 @@
 
 
 
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown me-auto">
                     <NavLink class="nav-link dropdown-toggle" href="categories" Match="NavLinkMatch.Prefix"  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                         Categories
                     </NavLink>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/categories">Catagory 1</a></li>
-                        <li><a class="dropdown-item" href="#">Catagory 2</a></li>
-                        <li><a class="dropdown-item" href="#">Catagory 3</a></li>
+                        <li><a class="dropdown-item" href="/categories">All Catagories</a></li>
+                        @foreach (CategoryDTO category in categories.Data)
+                        {
+                            <li><a class="dropdown-item" href="/blogPosts/@category.Id">@category.Name</a></li>
+                        }
                     </ul>
                 </li>
 
@@ -103,6 +106,20 @@
 @code {
     private string? currentUrl;
 
+    #region Parameter
+    #endregion
+
+
+    #region States
+    private PagedList<CategoryDTO> categories = new PagedList<CategoryDTO>();
+
+    private int page = 1;
+    private int pageSize = 10;
+    #endregion
+
+
+    #region Methods
+
     protected override void OnInitialized()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
@@ -119,4 +136,18 @@
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
     }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            categories = await CategoryService.GetAllCategoriesAsync(page, pageSize);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+    #endregion
 }

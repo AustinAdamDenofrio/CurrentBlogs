@@ -1,0 +1,39 @@
+﻿@page "/categories"
+@layout SideBarLayout
+
+@inject ICategoryDTOService CategoryService
+
+
+<PageTitle>Current Blogs | Categories</PageTitle>
+
+
+@*Generate Categories on the Page*@
+@foreach (CategoryDTO category in categories.Data)
+{
+    <div @key="category.Id">
+        <CategoryCard Category="category" />
+    </div>
+}
+
+@code {
+    #region Parameter
+    #endregion
+
+    #region State
+    private PagedList<CategoryDTO> categories = new PagedList<CategoryDTO>();
+
+
+    private int page = 1;
+    private int pageSize = 10;
+    #endregion
+
+    #region Methods
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Get All Categories
+        categories = await CategoryService.GetAllCategoriesAsync(page, pageSize);
+    }
+
+    #endregion
+}

@@ -31,21 +31,33 @@
     </div>
 </div>
 
-        @if (selectedView == SelectedView.All)
+@if (selectedView == SelectedView.All)
 {
     <h2 class="">Showing: All Posts </h2>
-    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false))
+
+    <p class="lead mt-5">Published</p>
+    @foreach (BlogPostDTO blogPost in publishedPosts.Data)
     {
         <div @key="blogPost.Id">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync" />
         </div>
     }
+
+    <p class="lead mt-5">Drafts</p>
+    @foreach (BlogPostDTO blogPost in draftPosts.Data)
+    {
+        <div @key="blogPost.Id">
+            <AuthorBlogPostCard BlogPost="blogPost"
+                                OnDelete="DeleteBlogPostAsync"
+                                OnPublish="PublishBlogPostAsync" />
+        </div>
+    }
 }
 else if (selectedView == SelectedView.Published)
 {
     <h2 class="">Showing: Published </h2>
-    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false && bp.IsPublished == true))
+    @foreach (BlogPostDTO blogPost in publishedPosts.Data)
     {
         <div @key="blogPost.Id">
             <AuthorBlogPostCard BlogPost="blogPost"
@@ -56,7 +68,7 @@ else if (selectedView == SelectedView.Published)
 else if (selectedView == SelectedView.Drafts)
 {
     <h2 class="">Showing: Drafts </h2>
-    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == false && bp.IsPublished == false))
+    @foreach (BlogPostDTO blogPost in draftPosts.Data)
     {
         <div @key="blogPost.Id">
             <AuthorBlogPostCard BlogPost="blogPost"
@@ -68,7 +80,7 @@ else if (selectedView == SelectedView.Drafts)
 else if (selectedView == SelectedView.Deleted)
 {
     <h2>Showing:<span class="text-danger"> Recently Deleted</span></h2>
-    @foreach (BlogPostDTO blogPost in blogPosts.Data.Where(bp => bp.IsDeleted == true))
+    @foreach (BlogPostDTO blogPost in deletedPosts.Data)
     {
         <div @key="blogPost.Id">
             <AuthorBlogPostCard BlogPost="blogPost"
@@ -85,7 +97,10 @@ else if (selectedView == SelectedView.Deleted)
     #endregion
 
     #region State
-    private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
+    private PagedList<BlogPostDTO> publishedPosts = new PagedList<BlogPostDTO>();
+    private PagedList<BlogPostDTO> draftPosts = new PagedList<BlogPostDTO>();
+    private PagedList<BlogPostDTO> deletedPosts = new PagedList<BlogPostDTO>();
+
     private string? imageError;
 
     //Toggles confirm deletion
@@ -107,7 +122,9 @@ else if (selectedView == SelectedView.Deleted)
     protected override async Task OnInitializedAsync()
     {
         //Get All Categories
-        blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
+        publishedPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
+        draftPosts = await BlogService.GetDraftPostsAsync(1, 5);
+        deletedPosts = await BlogService.GetDeletedPostsAsync(1, 5);
     }
 
 
@@ -117,7 +134,7 @@ else if (selectedView == SelectedView.Deleted)
         {
             await BlogService.DeleteBlogPostAsync(blogPostId);
 
-            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
+            publishedPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {
@@ -132,7 +149,7 @@ else if (selectedView == SelectedView.Deleted)
         {
             await BlogService.UpdateBlogPostAsync(formBlogPost);
 
-            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
+            publishedPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {
@@ -146,7 +163,7 @@ else if (selectedView == SelectedView.Deleted)
         {
             await BlogService.UpdateBlogPostAsync(formBlogPost);
 
-            blogPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
+            publishedPosts = await BlogService.GetPublishedBlogPostsAsync(1, 5);
         }
         catch (Exception ex)
         {

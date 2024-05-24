@@ -1,10 +1,11 @@
 ﻿@page "/"
-@using CurrentBlogs.Components.Layout
 
 @layout SideBarLayout
 
-
+@inject ICategoryDTOService CategoryService
 @inject IBlogPostDTOService BlogPostService
+
+@rendermode InteractiveServer
 
 <PageTitle>Home | All Blog Posts</PageTitle>
 
@@ -41,6 +42,10 @@
                 <li class="page-item active" aria-current="page">
                     <span class="page-link">1<span class="visually-hidden">(current)</span></span>
                 </li>
+
+
+                <li class="page-item"><a class="page-link" href="/?page=@blogPosts.Page">@blogPosts.Page</a></li>
+
                 <li class="page-item"><a class="page-link" href="/?page=2">2</a></li>
                 <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item"><a class="page-link" href="#">4</a></li>
@@ -53,7 +58,7 @@
             @if (Page > 1)
             {
                 <a class="btn btn-outline-secondary w-md-auto w-100 btn-sm" href="/?page=@(Page - 1)" type="button">
-                    Previous page
+                    Prev page
                 </a>
             }
             @if (Page < blogPosts.TotalPages)
@@ -72,10 +77,11 @@
     #region Parameter
     [SupplyParameterFromQuery]
     public int Page { get; set; }
-
     #endregion
 
     #region State
+
+    bool currentPageIsGenerated = false;
 
     private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
     #endregion
@@ -85,8 +91,16 @@
     protected override async Task OnParametersSetAsync()
     {
         if (Page < 1) Page = 1;
-        //Get All Posts
-        blogPosts = await BlogPostService.GetPublishedBlogPostsAsync(Page, 2);
+        try
+        {
+            //Get All Posts
+            blogPosts = await BlogPostService.GetPublishedBlogPostsAsync(Page, 2);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+
     }
 
     #endregion
