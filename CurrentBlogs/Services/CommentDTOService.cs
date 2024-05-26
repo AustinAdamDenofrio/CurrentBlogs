@@ -15,55 +15,75 @@ namespace CurrentBlogs.Services
             _repository = repository;
         }
 
-        public async Task CreateCommentAsync(CommentDTO comment, string UserId)
+
+        #region Get List of Items
+        public async Task<PagedList<CommentDTO>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize)
+        {
+            PagedList<Comment> comments = await _repository.GetCommentsByBlogPostIdAsync(blogPostId, page, pageSize);
+
+            PagedList<CommentDTO> commentsDTO = new();
+
+            commentsDTO.TotalItems = comments.TotalItems;
+            commentsDTO.TotalPages = comments.TotalPages;
+            commentsDTO.Page = comments.Page;
+
+            List<CommentDTO> dtos = new List<CommentDTO>();
+
+            foreach (Comment comment in comments.Data)
+            {
+                dtos.Add(comment.ToDTO());
+            }
+
+            commentsDTO.Data = dtos;
+
+            return commentsDTO;
+        }
+        #endregion
+
+
+        #region Get Item
+        Task<CommentDTO?> ICommentsDTOService.GetCommentById(CommentDTO commentDTO, int userId)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
+        #region Update db Item
+        public async Task CreateCommentAsync(CommentDTO comment, string userId)
         {
             Comment newComment = new Comment()
             {
                 Content = comment.Content,
-                AuthorId = UserId,
+                AuthorId = userId,
                 BlogPostId = comment.BlogPostId,
             };
 
-            newComment = await _repository.CreateCommentAsync(newComment);
+            await _repository.CreateCommentAsync(newComment);
         }
 
-        public async Task UpdateCommentAsync(CommentDTO comment, string UserId)
+        public async Task UpdateCommentAsync(CommentDTO commentDTO, string userId)
         {
-            Contact? contact = await _repository.GetContactByIdAsync(contactDTO.Id, UserId);
+            Comment? comment = await _repository.GetCommentById(commentDTO.Id, userId);
 
-            if (contact is not null)
+            if (comment is not null)
             {
-                contact.FirstName = contactDTO.FirstName;
-                contact.LastName = contactDTO.LastName;
-                contact.BirthDate = contactDTO.BirthDate;
-                contact.Address = contactDTO.Address;
-                contact.Address2 = contactDTO.Address2;
-                contact.City = contactDTO.City;
-                contact.State = contactDTO.State;
-                contact.ZipCode = contactDTO.ZipCode;
-                contact.Email = contactDTO.Email;
-                contact.PhoneNumber = contactDTO.PhoneNumber;
+                comment.Updated = DateTimeOffset.Now;
+                comment.AuthorId = userId;
+                comment.Content = commentDTO.Content;
+                comment.UpdateReason = commentDTO.UpdateReason;
+                comment.BlogPostId = commentDTO.BlogPostId;
 
-                if (contactDTO.ImageUrl?.StartsWith("data:") == true)
-                {
-                    contact.Image = UploadHelper.GetImageUpload(contactDTO.ImageUrl);
-                }
-                else
-                {
-                    contact.Image = null;
-                }
-
-                // dont let db update cats yet
-                contact.Categories.Clear();
-                await repository.UpdateContactAsync(contact);
-
-                //remove all the old cats
-                await repository.RemoveCategoriesFromContactAsync(contact.Id, userId);
-
-                //add back the cats based on the users selected 
-                IEnumerable<int> selectedCategoryIds = contactDTO.Categories.Select(c => c.Id);
-                await repository.AddCategoriesToContactAsync(contact.Id, userId, selectedCategoryIds);
+                await _repository.UpdateCommentAsync(comment);
             }
         }
+
+        public async Task DeleteCommentAsync(int commentId, string userId)
+        {
+            await _repository.DeleteCommentAsync(commentId, userId);
+        }
+
+        #endregion
+
     }
 }

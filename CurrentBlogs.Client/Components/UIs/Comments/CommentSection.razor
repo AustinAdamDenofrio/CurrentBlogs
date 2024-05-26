@@ -1,33 +1,63 @@
 ﻿@inject ICommentsDTOService CommentService
 
- <!-- Comments -->
-@if (Comments is not null)
-{
-    <div class="pt-4 pt-xl-5 mt-4" id="comments">
-        <h2 class="h1 py-lg-1 py-xl-3"></h2>
+<!-- Comments -->
 
-        <!-- Comment form -->
-        <CommentForm Comment="new CommentDTO()"
-                     OnSubmit="HandleSubmit"
-                     PostId="BlogPostId"/>
+<div class="pt-4 pt-xl-5" id="comments">
 
-        <!-- Comment -->
-        @foreach (CommentDTO comment in Comments)
-        {
-            <CommentCard Comment="comment" />
-        }
+    <!-- Comment form -->
+    <AuthorizeView>
+        <Authorized>
+            <div class="hstack gap-2">
+                <a class="nav-link fs-4 fw-semibold px-0 py-2 text-primary"
+                   type="button"
+                   data-bs-toggle="collapse"
+                   href="#NewComment"
+                   role="button"
+                   aria-expanded="false"
+                   aria-controls="NewComment"
+                   aria-label="new comment">
+                    Add New comment
+                    <i class="ai-edit-alt fs-xl ms-2" aria-label="New Comment"></i>
+                </a>
+            </div>
+            <div class="row pb-5 pb-md-5 justify-content-center justify-content-md-start">
+                <div class="col">
+                    <div class="collapse" id="NewComment">
+                        <CommentForm Comment="new CommentDTO()"
+                                     OnSubmit="HandleSubmit" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </Authorized>
+        <NotAuthorized>
+            <div class="vstack align-items-center align-items-md-start">
+                <h3 class="my-3">@Comments?.Count() Comments</h3>
+                <a class="link-underline lead pb-5" href="Account/Login">Login to comment</a>
+            </div>
+            <hr />
+        </NotAuthorized>
+    </AuthorizeView>
 
-        <!-- All comments button -->
-        <div class="text-end pb-5 mb-lg-1 mb-xl-3">
-            <a class="btn btn-link px-0" href="#">
-                Show all comments
-                <i class="ai-chevron-right fs-lg ms-1"></i>
-            </a>
+    <!-- Comment -->
+    @foreach (CommentDTO comment in Comments!)
+    {
+        <div @key="comment.Id">
+            <CommentCard Comment="comment"
+                OnDeleteRefreshComments="daf"/>
         </div>
+    }
 
-
+    <!-- All comments button -->
+    <div class="text-end pb-5 mb-lg-1 mb-xl-3">
+        <a class="btn btn-link px-0" href="#">
+            Show all comments
+            <i class="ai-chevron-right fs-lg ms-1"></i>
+        </a>
     </div>
-}
+    @errorMessage
+</div>
+
 
 @code {
     #region Parameter
@@ -48,6 +78,8 @@
     private UserInfo? userInfo;
     string errorMessage = string.Empty;
 
+    int page = 1;
+    int pageSize = 5;
     #endregion
 
 
@@ -73,6 +105,24 @@
         {
             Console.WriteLine(ex);
             errorMessage = "An error occurred while trying to grab comments";
+        }
+    }
+
+    private async Task HandleUpdate(CommentDTO newComment)
+    {
+        try
+        {
+            if (newComment is not null)
+            {
+                userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+                newComment.BlogPostId = BlogPostId;
+                await CommentService.CreateCommentAsync(newComment, userInfo!.UserId);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
         }
     }
 

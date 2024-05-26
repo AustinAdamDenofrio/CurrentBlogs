@@ -7,15 +7,18 @@ namespace CurrentBlogs.Services.Interfaces
     {
 
         #region Get List 
+        Task<PagedList<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize);
         #endregion
 
 
         #region Get Item
+        Task<Comment?> GetCommentById(int commentId, string userId);
         #endregion
 
         #region Update Comments DB Item
-        Task<Comment> CreateCommentAsync(Comment comment);
-        Task<Comment> UpdateCommentAsync(Comment comment);
+        Task CreateCommentAsync(Comment comment);
+        Task UpdateCommentAsync(Comment comment);
+        Task DeleteCommentAsync(int commentId, string userId);
         #endregion
     }
 }

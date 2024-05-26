@@ -1,4 +1,6 @@
-﻿@if (Comment is not null)
+﻿@inject ICommentsDTOService CommentService
+
+@if (Comment is not null)
 {
     <div class="border-bottom py-4 mt-2 mb-4">
         <div class="d-flex align-items-center pb-1 mb-3">
@@ -9,24 +11,95 @@
             </div>
         </div>
         <p class="pb-2 mb-0">@((MarkupString)Comment.Content!)</p>
-        <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button">
-            Reply
-            <i class="ai-redo fs-xl ms-2"></i>
-        </button>
-    </div>    
+        <AuthorizeView>
+            @if (Comment.UpdateReason is not null)
+            {
+                <div>
+                    <p class="small fst-italic">@Comment.Updated</p>
+                    <p class="small fw-light"><strong>Reason:</strong> @Comment.UpdateReason</p>
+                </div>
+            }
+            @if (context.User.IsInRole("Author") || context.User.IsInRole("Moderator"))
+            {
+                <div class="hstack gap-2">
+                    <a class="nav-link fs-sm fw-semibold px-0 py-2"
+                       type="button"
+                       data-bs-toggle="collapse"
+                       href="#collapseExample@(Comment.Id)"
+                       role="button"
+                       aria-expanded="false"
+                       aria-controls="collapseExample@(Comment.Id)"
+                       aria-label="Edit">
+                        <i class="ai-pencil fs-xl ms-2 text-warning" aria-label="Edit"></i>
+                        Edit
+                    </a>
+                    <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button" @onclick="async () => await DeleteBlogPostAsync(Comment.Id)">
+                        <i class="ai-trash fs-xl ms-2 text-danger" aria-label="Delete"></i>
+                    </button>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="collapse" id="collapseExample@(Comment.Id)">
+                            <CommentForm Comment="Comment"
+                                         OnSubmit="HandleSubmit" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </AuthorizeView>
+    </div>
 }
 
 @code {
     #region Parameter
     [Parameter, EditorRequired]
     public CommentDTO? Comment { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? AuthStateTask { get; set; }
+
+
+    [Parameter, EditorRequired]
+    public EventCallback<CommentDTO> OnDeleteRefreshComments { get; set; }
     #endregion
 
     #region State
+    private UserInfo? userInfo;
     #endregion
 
 
     #region Method
+    private async Task HandleSubmit(CommentDTO updatedComment)
+    {
+        try
+        {
+            if (updatedComment is not null)
+            {
+                userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+                await CommentService.UpdateCommentAsync(updatedComment, userInfo!.UserId);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
+    private async Task DeleteBlogPostAsync(int commentId)
+    {
+        try
+        {
+            userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+            await CommentService.DeleteCommentAsync(Comment!.Id, userInfo!.UserId);
+
+            await OnDeleteRefreshComments.InvokeAsync(Comment);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
     #endregion
 
 }

@@ -95,9 +95,12 @@ else
     </div>
 
     <!-- Comments -->
+    @if(blogPost.Comments is not null)
+    {
     <CommentSection @rendermode="InteractiveServer" 
                     Comments="blogPost.Comments"
                     BlogPostId="blogPost.Id" />
+    }
 
 
 }

@@ -1,9 +1,12 @@
-﻿using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
+﻿using CurrentBlogs.Client.Components.Models;
+using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
 using CurrentBlogs.Data;
+using CurrentBlogs.Helper.Extensions;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
+using System.Drawing.Printing;
 
 namespace CurrentBlogs.Services
 {
@@ -17,12 +20,37 @@ namespace CurrentBlogs.Services
         }
 
         #region Get List
+        public async Task<PagedList<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+
+            PagedList<Comment> comments = await context.Comments
+                                                .Where(c => c.BlogPost!.Id == blogPostId)
+                                                .Include(c => c.Author)
+                                                .OrderBy(c => c.Created)
+                                                .ToPagedListAsync(page, pageSize);
+            return comments;
+        }
         #endregion
 
 
 
 
         #region Get Item
+        public async Task<Comment?> GetCommentById(int commentId, string userId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            Comment? comment = await context.Comments
+                                    .Include(c => c.BlogPost)
+                                    .Include(c => c.Author)
+                                    .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userId);
+
+
+
+            return comment;
+        }
         #endregion
 
 
@@ -37,9 +65,8 @@ namespace CurrentBlogs.Services
 
             context.Comments.Add(comment);
             await context.SaveChangesAsync();
-
-            return comment;
         }
+
 
         public async Task UpdateCommentAsync(Comment comment)
         {
@@ -52,18 +79,21 @@ namespace CurrentBlogs.Services
                 context.Comments.Update(comment);
                 await context.SaveChangesAsync();
             }
-
         }
 
-        Task<Comment> ICommentsRepository.CreateCommentAsync(Comment comment)
+        public async Task DeleteCommentAsync(int commentId, string userId)
         {
-            throw new NotImplementedException();
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            Comment? comment = await context.Comments.FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userId);
+
+            if (comment != null)
+            {
+                context.Comments.Remove(comment);
+                await context.SaveChangesAsync();
+            }
         }
 
-        Task<Comment> ICommentsRepository.UpdateCommentAsync(Comment comment)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
     }
 }

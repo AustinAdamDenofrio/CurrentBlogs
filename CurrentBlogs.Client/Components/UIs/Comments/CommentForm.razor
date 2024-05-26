@@ -1,9 +1,16 @@
 ﻿<!-- Comment form -->
 @if (Comment is not null)
 {
-    <div class="card border-0 bg-secondary pt-2 p-md-2 p-xl-3 p-xxl-4 mt-n3 mt-md-0">
+    <div class="card border-0 @(Comment.Id == 0 ? "bg-secondary" : "bg-warning-subtle") pt-2 p-md-2 p-xl-3 p-xxl-4 mt-n3 mt-md-0">
         <div class="card-body">
-            <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
+            @if (Comment.Id != 0)
+            {
+                <h2 class="pb-2 pb-lg-3 pb-xl-4">Edit comment</h2>
+            }
+            else
+            {
+                <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
+            }
             <EditForm Model="Comment" OnValidSubmit="HandleSubmit" class="row needs-validation g-4">
                 <DataAnnotationsValidator />
                 <div class="row">
@@ -20,7 +27,22 @@
                     </div>
                     <div class="col-12">
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary mt-3" type="submit">Comment</button>
+                            @if (Comment.Id != 0)
+                            {
+                                <a class="btn btn-outline-secondary mt-3 me-1" type="button"
+                                   data-bs-toggle="collapse"
+                                   href="#collapseExample@(Comment.Id)"
+                                   role="button"
+                                   aria-expanded="false"
+                                   aria-controls="collapseExample@(Comment.Id)">
+                                    Cancel
+                                </a>
+                                <button class="btn btn-primary mt-3 " type="submit">Comment</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary mt-3" type="submit">Comment</button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -34,9 +56,6 @@
     #region Parameter
     [Parameter, EditorRequired]
     public CommentDTO? Comment { get; set; }
-
-    [Parameter, EditorRequired]
-    public int PostId { get; set; }
 
     [Parameter, EditorRequired]
     public EventCallback<CommentDTO> OnSubmit { get; set; }
