@@ -29,19 +29,49 @@
                         <div class="d-flex justify-content-end">
                             @if (Comment.Id != 0)
                             {
+                                <label class="form-label"></label>
+                                <InputText 
+                                    @bind-Value="Comment.UpdateReason"
+                                    class="form-control">
+                                </InputText>
+                                <ValidationMessage For="() => Comment.UpdateReason" />
                                 <a class="btn btn-outline-secondary mt-3 me-1" type="button"
                                    data-bs-toggle="collapse"
-                                   href="#collapseExample@(Comment.Id)"
+                                   href="#collapse@(Comment.Id)"
                                    role="button"
                                    aria-expanded="false"
-                                   aria-controls="collapseExample@(Comment.Id)">
+                                   aria-controls="collapse@(Comment.Id)">
                                     Cancel
                                 </a>
-                                <button class="btn btn-primary mt-3 " type="submit">Comment</button>
+                                <button class="btn btn-primary mt-3" 
+                                    type="submit" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse@(Comment.Id)" 
+                                    aria-expanded="false" 
+                                    aria-controls="collapse@(Comment.Id)">
+                                        Comment
+                                </button>
                             }
                             else
                             {
-                                <button class="btn btn-primary mt-3" type="submit">Comment</button>
+                                <a class="btn btn-outline-secondary mt-3 me-1"
+                                   type="button"
+                                   data-bs-toggle="collapse"
+                                   href="#NewComment"
+                                   role="button"
+                                   aria-expanded="false"
+                                   aria-controls="NewComment"
+                                   aria-label="new comment">
+                                    Cancel
+                                </a>
+                                <button class="btn btn-primary mt-3"
+                                        type="submit"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#NewComment"
+                                        aria-expanded="false"
+                                        aria-controls="NewComment">
+                                    Comment
+                                    </button>
                             }
                         </div>
                     </div>

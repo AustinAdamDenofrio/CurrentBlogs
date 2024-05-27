@@ -6,7 +6,7 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
     public interface ICommentsDTOService
     {
         #region Get List 
-        Task<PagedList<CommentDTO>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize);
+        Task<IEnumerable<CommentDTO>> GetCommentsByBlogPostIdAsync(int blogPostId);
         #endregion
 
 

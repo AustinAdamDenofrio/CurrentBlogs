@@ -19,16 +19,16 @@
                     <p class="small fw-light"><strong>Reason:</strong> @Comment.UpdateReason</p>
                 </div>
             }
-            @if (context.User.IsInRole("Author") || context.User.IsInRole("Moderator"))
+            @if (Comment.AuthorId == userInfo!.UserId || context.User.IsInRole("Author") || context.User.IsInRole("Moderator"))
             {
                 <div class="hstack gap-2">
                     <a class="nav-link fs-sm fw-semibold px-0 py-2"
                        type="button"
                        data-bs-toggle="collapse"
-                       href="#collapseExample@(Comment.Id)"
+                       href="#collapse@(Comment.Id)"
                        role="button"
                        aria-expanded="false"
-                       aria-controls="collapseExample@(Comment.Id)"
+                       aria-controls="collapse@(Comment.Id)"
                        aria-label="Edit">
                         <i class="ai-pencil fs-xl ms-2 text-warning" aria-label="Edit"></i>
                         Edit
@@ -39,7 +39,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div class="collapse" id="collapseExample@(Comment.Id)">
+                        <div class="collapse" id="collapse@(Comment.Id)">
                             <CommentForm Comment="Comment"
                                          OnSubmit="HandleSubmit" />
                         </div>
@@ -69,6 +69,19 @@
 
 
     #region Method
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+
     private async Task HandleSubmit(CommentDTO updatedComment)
     {
         try

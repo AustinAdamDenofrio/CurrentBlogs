@@ -7,7 +7,7 @@ namespace CurrentBlogs.Services.Interfaces
     {
 
         #region Get List 
-        Task<PagedList<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize);
+        Task<IEnumerable<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId);
         #endregion
 
 

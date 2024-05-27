@@ -44,7 +44,7 @@
     {
         <div @key="comment.Id">
             <CommentCard Comment="comment"
-                OnDeleteRefreshComments="daf"/>
+                OnDeleteRefreshComments="HandleUpdate"/>
         </div>
     }
 
@@ -95,9 +95,7 @@
                 userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
                 newComment.BlogPostId = BlogPostId;
                 await CommentService.CreateCommentAsync(newComment, userInfo!.UserId);
-                //Update the list of Comments
-
-                // Nav.NavigateTo("/");
+                Comments = await CommentService.GetCommentsByBlogPostIdAsync(BlogPostId);
             }
 
         }
@@ -115,8 +113,7 @@
             if (newComment is not null)
             {
                 userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-                newComment.BlogPostId = BlogPostId;
-                await CommentService.CreateCommentAsync(newComment, userInfo!.UserId);
+                Comments = await CommentService.GetCommentsByBlogPostIdAsync(BlogPostId);
             }
 
         }

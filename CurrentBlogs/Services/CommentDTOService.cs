@@ -17,24 +17,11 @@ namespace CurrentBlogs.Services
 
 
         #region Get List of Items
-        public async Task<PagedList<CommentDTO>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize)
+        public async Task<IEnumerable<CommentDTO>> GetCommentsByBlogPostIdAsync(int blogPostId)
         {
-            PagedList<Comment> comments = await _repository.GetCommentsByBlogPostIdAsync(blogPostId, page, pageSize);
+            IEnumerable<Comment> comments = await _repository.GetCommentsByBlogPostIdAsync(blogPostId);
 
-            PagedList<CommentDTO> commentsDTO = new();
-
-            commentsDTO.TotalItems = comments.TotalItems;
-            commentsDTO.TotalPages = comments.TotalPages;
-            commentsDTO.Page = comments.Page;
-
-            List<CommentDTO> dtos = new List<CommentDTO>();
-
-            foreach (Comment comment in comments.Data)
-            {
-                dtos.Add(comment.ToDTO());
-            }
-
-            commentsDTO.Data = dtos;
+            IEnumerable<CommentDTO> commentsDTO = comments.Select(c => c.ToDTO());
 
             return commentsDTO;
         }

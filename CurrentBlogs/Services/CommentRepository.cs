@@ -20,16 +20,16 @@ namespace CurrentBlogs.Services
         }
 
         #region Get List
-        public async Task<PagedList<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId, int page, int pageSize)
+        public async Task<IEnumerable<Comment>> GetCommentsByBlogPostIdAsync(int blogPostId)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
 
 
-            PagedList<Comment> comments = await context.Comments
+            IEnumerable<Comment> comments = await context.Comments
                                                 .Where(c => c.BlogPost!.Id == blogPostId)
-                                                .Include(c => c.Author)
                                                 .OrderBy(c => c.Created)
-                                                .ToPagedListAsync(page, pageSize);
+                                                .Include(c => c.Author)
+                                                .ToListAsync();
             return comments;
         }
         #endregion
