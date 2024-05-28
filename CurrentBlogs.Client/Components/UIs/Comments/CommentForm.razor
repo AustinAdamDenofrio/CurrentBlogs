@@ -11,7 +11,7 @@
             {
                 <h2 class="pb-2 pb-lg-3 pb-xl-4">Leave a comment</h2>
             }
-            <EditForm Model="Comment" OnValidSubmit="HandleSubmit" class="row needs-validation g-4">
+            <EditForm Context="contextEditForm" Model="Comment" OnValidSubmit="HandleSubmit" class="row needs-validation g-4">
                 <DataAnnotationsValidator />
                 <div class="row">
                     <div class="col-12">

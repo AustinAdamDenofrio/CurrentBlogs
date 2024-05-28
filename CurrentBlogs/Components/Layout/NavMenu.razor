@@ -9,7 +9,7 @@
     <div class="container">
 
         <!-- Navbar brand (Logo) -->
-        
+
         <a class="navbar-brand pe-sm-3" href="/">
             <span class="text-primary flex-shrink-0 me-2">
                 <img width="35" height="32" src="Images/Logo_Dark_NoText.svg" />
@@ -23,26 +23,26 @@
         </button>
 
         <!-- Navbar collapse (Main navigation) -->
-        <nav class="collapse navbar-collapse d-flex" id="navbarNav">
-            <ul class="navbar-nav navbar-nav-scroll  d-flex flex-grow-1" style="--ar-scroll-height: 520px;">
+        <nav class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav navbar-nav-scroll" style="--ar-scroll-height: 520px;">
 
                 <li class="nav-item">
-                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All"> 
-                        Home  
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        Home
                     </NavLink>
                 </li>
 
 
 
-                <li class="nav-item dropdown me-auto">
-                    <NavLink class="nav-link dropdown-toggle" href="categories" Match="NavLinkMatch.Prefix"  data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                <li class="nav-item dropdown">
+                    <NavLink class="nav-link dropdown-toggle" href="categories" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                         Categories
                     </NavLink>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/categories">All Catagories</a></li>
+                        <li><a class="dropdown-item" href="/">All Catagories</a></li>
                         @foreach (CategoryDTO category in categories.Data)
                         {
-                            <li><a class="dropdown-item" href="/blogPosts/@category.Id">@category.Name</a></li>
+                            <li><a class="dropdown-item" href="/?category=@category.Id">@category.Name</a></li>
                         }
                     </ul>
                 </li>
@@ -93,7 +93,7 @@
                         </li>
 
                     </NotAuthorized>
-                <!-- ToDo: Push account to the right side -->
+                    <!-- ToDo: Push account to the right side -->
                 </AuthorizeView>
 
 
