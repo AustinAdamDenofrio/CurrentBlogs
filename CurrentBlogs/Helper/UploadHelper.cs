@@ -8,7 +8,6 @@ namespace CurrentBlogs.Helper
     {
         public static readonly string DefaultProfilePicture = ImageHelper.DefaultProfileImage;
         public static readonly string DefaultBlogImage = ImageHelper.DefaultBlogImage;
-        //public static readonly string DefaultProfileImage = ImageHelper.DefaultProfileImage;
         public static readonly int MaxFileSize = ImageHelper.MaxFileSize;
 
 
