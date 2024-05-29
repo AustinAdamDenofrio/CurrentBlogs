@@ -40,7 +40,6 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
         connectionString,
         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     ));
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -50,7 +49,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+//opt out of email confirmation
+//builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, SendGridService>();
 builder.Services.AddSingleton<IEmailSender, SendGridService>();
