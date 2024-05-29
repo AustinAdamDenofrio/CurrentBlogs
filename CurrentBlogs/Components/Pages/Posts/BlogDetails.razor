@@ -62,7 +62,7 @@ else
         <h3 class="h6 py-1 mb-0 me-4">Relevant tags:</h3>
         @foreach (TagDTO tag in blogPost.Tags)
         {
-            <a class="nav-link fs-sm py-1 px-0 me-3" href="#">
+            <a class="nav-link fs-sm py-1 px-0 me-3" href="tag/@tag.Id">
                 <span class="text-primary">#</span>@tag.Name
             </a>
         }
@@ -97,9 +97,17 @@ else
     <!-- Comments -->
     @if(blogPost.Comments is not null)
     {
-    <CommentSection @rendermode="InteractiveServer" 
-                    Comments="blogPost.Comments"
-                    BlogPostId="blogPost.Id" />
+        <AuthorizeView>
+            <Authorized>
+                <CommentSection @rendermode="InteractiveAuto"
+                                Comments="blogPost.Comments"
+                                BlogPostId="blogPost.Id" />
+            </Authorized>
+            <NotAuthorized>
+                <CommentSection Comments="blogPost.Comments"
+                                BlogPostId="blogPost.Id" />
+            </NotAuthorized>
+        </AuthorizeView>
     }
 
 

@@ -8,7 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\Images\mark_dark.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\CurrentBlogs.Client\Components\UIs\Comments\CreateForm.razor" Link="CreateForm.razor" />
+    <None Include="Components\Pages\Posts\PostsByCategory.razor" />
+    <None Include="wwwroot\Images\mark_dark.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +28,15 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="TinyMCE.Blazor" Version="1.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\Posts\PostsByCategory.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\Posts\PostsByCategory.razor" />
+    <_ContentIncludedByDefault Remove="wwwroot\Images\mark_dark.svg" />
   </ItemGroup>
 
 </Project>

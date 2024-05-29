@@ -1,43 +1,16 @@
 ﻿@if (BlogPost is not null)
 {
     <article class="row g-0 border-0 mb-4">
-        <a class="col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="#" style="background-image: url(@BlogPost.ImageUrl); min-height: 14rem" aria-label="Post image">
+        <a class="col-sm-4 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="posts/@BlogPost.Slug" style="background-image: url(@BlogPost.ImageUrl); min-height: 14rem" aria-label="Post image">
         </a>
         <div class="col-sm-7">
             <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4">
                 <div class="hstack">
                     <h3 class="me-2">
-                        <a href="#">@BlogPost.Title</a>
+                        <a href="posts/@BlogPost.Slug">@BlogPost.Title</a>
                     </h3>
-                    @if (BlogPost.IsPublished == true && BlogPost.IsDeleted == false)
-                    {
-                        <div class="d-flex justify-content-end">
-                            <a class="btn btn-primary btn-sm mb-2 me-3">
-                                Published
-                            </a>
-                        </div>
-
-                    }
-                    else if (BlogPost.IsPublished == false && BlogPost.IsDeleted == false)
-                    {
-                        <div class="d-flex justify-content-end">
-                            <a class="btn btn-outline-secondary btn-sm mb-2 me-3">
-                                Draft
-                            </a>
-                        </div>
-
-                    }
-                    else if (BlogPost.IsDeleted == true)
-                    {
-                        <div class="d-flex justify-content-end">
-                            <a class="btn btn-danger btn-sm mb-2 me-3">
-                                Deleted
-                            </a>
-                        </div>
-                    }
                 </div>
                 <p class="d-sm-none d-md-block">
-                    @* Trailling if text is to large *@
                     @BlogPost.Abstract
                 </p>
                 <div class="mb-3">
@@ -46,7 +19,7 @@
                         @if (isDeleting == false)
                         {
                             <div class="fs-4 d-flex justify-content-start">
-                                <a class="me-auto me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
+                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
                                     Edit
                                 </a>
                                 <a class="me-3 editIcons btn btn-outline-danger btn-sm" role="button" @onclick="() => isDeleting = true">
@@ -68,7 +41,7 @@
                         @if (isDeleting == false)
                         {
                             <div class="fs-4 d-flex justify-content-start ">
-                                <a class="me-auto me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
+                                <a class="me-3 btn btn-sm btn-outline-warning" href="/blogpost/edit/@BlogPost.Id">
                                     Edit
                                 </a>
                                 <a class="me-3 btn btn-sm btn-outline-secondary" role="button" @onclick="async () => await PublishBlogPostAsync(BlogPost)">
@@ -93,7 +66,7 @@
                     {
                         @if (isDeleting == false)
                         {
-                            <div class="fs-4 d-flex justify-content-start ">
+                            <div class="fs-4 d-flex justify-content-start">
                                 <a class="me-3 editIcons btn btn-primary btn-sm" role="button" @onclick="() => isDeleting = true">
                                     Restore Post
                                 </a>
@@ -105,24 +78,22 @@
                             <div class="">
                                 <button class="btn btn-sm btn-secondary" @onclick="() => isDeleting = false">Cancel</button>
                                 @*Run a restore method that updates the blogpost, navigates blogpost page, and gets the updted blogs from db. This method needs to be injected*@
-                                <button class="btn btn-sm btn-danger me-1" role="button" @onclick="async () => await RestoreBlogPostAsync(BlogPost)">Restore Post</button>
+                                <button class="btn btn-sm btn-danger me-1" role="button" @onclick="RestoreBlogPostAsync">Restore Post</button>
                             </div>
                         }
                     }
                 </div>
                 <div class="d-flex flex-wrap align-items-center mt-n2">
-                    <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                        6
-                        <i class="ai-share fs-lg ms-1"></i>
-                    </a>
-                    <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
+                    <span class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3">
+                        @BlogPost.Tags.Count
+                        <i class="ai-target fs-lg ms-1"></i>
+                    </span>
+                    <span class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
                         @BlogPost.Comments.Count
                         <i class="ai-message fs-lg ms-1"></i>
-                    </a>
+                    </span>
                     <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                    @* <span class="fs-sm text-body-secondary mt-2">@BlogPost.Updated  hours ago</span> *@
-                    <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
-                    <a class="badge text-nav fs-xs border mt-2" href="#">
+                    <a class="badge text-nav fs-xs border mt-2" href="/category/@BlogPost.CategoryId">
                         @BlogPost.Category?.Name
                     </a>
                 </div>
@@ -167,7 +138,7 @@
         isDeleting = false;
     }
 
-    private async Task RestoreBlogPostAsync(BlogPostDTO formBlogPost)
+    private async Task RestoreBlogPostAsync()
     {
         BlogPost!.IsDeleted = false;
         BlogPost!.IsPublished = false;

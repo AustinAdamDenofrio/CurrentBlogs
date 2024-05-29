@@ -15,7 +15,7 @@
             @if (Comment.UpdateReason is not null)
             {
                 <div>
-                    <p class="small fst-italic">@Comment.Updated</p>
+                    <p class="small fst-italic">@formatedUpdatedDate</p>
                     <p class="small fw-light"><strong>Reason:</strong> @Comment.UpdateReason</p>
                 </div>
             }
@@ -33,7 +33,7 @@
                         <i class="ai-pencil fs-xl ms-2 text-warning" aria-label="Edit"></i>
                         Edit
                     </a>
-                    <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button" @onclick="async () => await DeleteBlogPostAsync(Comment.Id)">
+                    <button class="nav-link fs-sm fw-semibold px-0 py-2" type="button" @onclick="DeleteBlogPostAsync">
                         <i class="ai-trash fs-xl ms-2 text-danger" aria-label="Delete"></i>
                     </button>
                 </div>
@@ -65,6 +65,8 @@
 
     #region State
     private UserInfo? userInfo;
+    private string? formatedUpdatedDate;
+    private string? formatedTimeSinceComment;
     #endregion
 
 
@@ -79,6 +81,16 @@
         catch (Exception ex)
         {
             Console.WriteLine(ex);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (Comment!.Updated.HasValue == true)
+        {
+            formatedUpdatedDate = Comment.Updated.Value.ToString("MM/dd/yyyy");
+            TimeSpan timeSinceComment = (DateTimeOffset.Now - Comment.Updated.Value);
+            // formatedTimeSinceComment = timeSinceComment.ToString("dddd, dd MMMM yyyy ");
         }
     }
 
@@ -99,12 +111,12 @@
         }
     }
 
-    private async Task DeleteBlogPostAsync(int commentId)
+    private async Task DeleteBlogPostAsync()
     {
         try
         {
-            userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
-            await CommentService.DeleteCommentAsync(Comment!.Id, userInfo!.UserId);
+            // userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+            await CommentService.DeleteCommentAsync(Comment!.Id);
 
             await OnDeleteRefreshComments.InvokeAsync(Comment);
         }

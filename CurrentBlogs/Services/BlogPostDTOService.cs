@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using NuGet.Protocol.Core.Types;
 using System.Drawing.Printing;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CurrentBlogs.Services
 {
@@ -85,7 +86,6 @@ namespace CurrentBlogs.Services
 
             return postsDTO;
         }
-
         public async Task<IEnumerable<BlogPostDTO>> GetTopBlogPostsAsync(int numberOfPopular)
         {
             IEnumerable<BlogPost> createTopPosts = await _repository.GetTopBlogPostsAsync(numberOfPopular);
@@ -93,6 +93,67 @@ namespace CurrentBlogs.Services
             IEnumerable<BlogPostDTO> topPostsDTO = createTopPosts.Select(bp => bp.ToDTO());
 
             return topPostsDTO;
+        }
+
+        public async Task<PagedList<BlogPostDTO>> GetPostsByCategoryId(int categoryId, int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.GetPostsByCategoryId(categoryId, page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data)
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
+        }
+        public async Task<PagedList<BlogPostDTO>> GetPostsByTagIdAsync(int tagId, int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.GetPostsByTagIdAsync(tagId, page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data)
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
+        }
+        public async Task<PagedList<BlogPostDTO>> SearchBlogPostsAsync(string query, int page, int pageSize)
+        {
+            PagedList<BlogPost> posts = await _repository.SearchBlogPostsAsync(query, page, pageSize);
+
+            PagedList<BlogPostDTO> postsDTO = new();
+            postsDTO.TotalPages = posts.TotalPages;
+            postsDTO.TotalItems = posts.TotalItems;
+            postsDTO.Page = posts.Page;
+
+            List<BlogPostDTO> dtos = new List<BlogPostDTO>();
+
+            foreach (BlogPost blogPost in posts.Data)
+            {
+                dtos.Add(blogPost.ToDTO());
+            }
+
+            postsDTO.Data = dtos;
+
+            return postsDTO;
         }
         #endregion
 
@@ -198,6 +259,16 @@ namespace CurrentBlogs.Services
         {
             await _repository.RestoreDeletedBlogPostAsync(blogPostId);
         }
+        public async Task<TagDTO?> GetTagByIdAsync(int tagId)
+        {
+            Tag? tag = await _repository.GetTagByIdAsync(tagId);
+
+            return tag?.ToDTO();
+        }
+
+
+
+
         #endregion
 
 

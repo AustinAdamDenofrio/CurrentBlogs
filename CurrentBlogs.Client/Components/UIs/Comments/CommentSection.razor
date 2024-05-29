@@ -95,6 +95,7 @@
                 userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
                 newComment.BlogPostId = BlogPostId;
                 await CommentService.CreateCommentAsync(newComment, userInfo!.UserId);
+
                 Comments = await CommentService.GetCommentsByBlogPostIdAsync(BlogPostId);
             }
 
@@ -112,7 +113,7 @@
         {
             if (newComment is not null)
             {
-                userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
+                // userInfo = await UserInfoHelper.GetUserInfoAsync(AuthStateTask);
                 Comments = await CommentService.GetCommentsByBlogPostIdAsync(BlogPostId);
             }
 

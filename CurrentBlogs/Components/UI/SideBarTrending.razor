@@ -15,12 +15,14 @@
             @* Get to know me *@
             <div>
                 <div class="my-3">
-                    <img class="portfolio-image me-3 float-start" src="/api/uploads/author" />
+                    <img class="portfolio-image me-3 float-start" src="/Images/proPhoto.jpeg" />
                     <p class="lead">Austin Denofrio</p>
-                    <p class="text-wrap">The best blogger this side of the mississippi. There is noone else who can write blogs such as I. The way i concisely type and clearly write is by no means sub-par</p>
+                    <p class="text-wrap">
+                        I'm a full-stack software developer in the .NET8 Blazor framework. I have a couple of years experience in various tech related jobs, but my passion is fullstack development.
+                    </p>
                 </div>
                 <div class="d-flex mt-n3 ms-n3 mb-lg-5 mb-4 pb-3 pb-lg-0">
-                    <a class="btn btn-secondary btn-icon btn-sm btn-linkedin rounded-circle mt-3 ms-3" href="https://www.linkedin.com/in/austin-denofrio-286792223/" target="_blank" aria-label="LinkedIn">
+                    <a class="ms-auto btn btn-secondary btn-icon btn-sm btn-linkedin rounded-circle mt-3 ms-3" href="https://www.linkedin.com/in/austin-denofrio-286792223/" target="_blank" aria-label="LinkedIn">
                         <i class="ai-linkedin"></i>
                     </a>
                     <a class="btn btn-secondary btn-icon btn-sm btn-github rounded-circle mt-3 ms-3" href="https://github.com/AustinAdamDenofrio" target="_blank" aria-label="Github">
@@ -30,59 +32,33 @@
             </div>
 
             <!-- Search box -->
-            <div class="position-relative mb-4 mb-lg-5">
+            <form action="search" method="get" class="position-relative mb-4 mb-lg-5" >
                 <i class="ai-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
-                <input class="form-control ps-5" type="search" placeholder="Enter keyword">
-            </div>
+                <input class="form-control ps-5" type="search" placeholder="Enter keyword" name="query" value="@Query">
+            </form>
 
             <!-- Popular posts -->
             <h4 class="pt-1 pt-lg-0 mt-lg-n2">Most popular:</h4>
             <div class="mb-lg-5 mb-4">
                 @foreach (BlogPostDTO topPost in topPosts)
                 {
-                    <article class="position-relative pb-2 mb-3 mb-lg-4">
-                        <img class="rounded-5" src="@topPost.ImageUrl" alt="Post image">
-                        <h5 class="h6 mt-3 mb-0">
-                            <a class="stretched-link" href="/posts/@topPost.Slug">@topPost.Title</a>
-                        </h5>
-                    </article>
+                    <a href="/posts/@topPost.Slug">
+                        <article class="position-relative pb-2 mb-3 mb-lg-4">
+                            <h5 class="h6 mt-3 mb-0">
+                                <a class="stretched-link" href="/posts/@topPost.Slug">@topPost.Title</a>
+                            </h5>
+                            <img class="rounded-5" src="@topPost.ImageUrl" alt="Post image">
+                        </article>
+                    </a>
                 }
             </div>
-
-            <!-- Recent posts -->
-            <h4 class="pt-3 pt-lg-1 mb-4">Recent posts:</h4>
-            <ul class="list-unstyled mb-lg-5 mb-4">
-
-                <li class="border-bottom pb-3 mb-3">
-                    <span class="h6 mb-0">
-                        <a href="blog-single-v1.html">Instagram trends that will definitely work and bring results in the new 2022</a>
-                    </span>
-                </li>
-
-                <li class="border-bottom pb-3 mb-3">
-                    <span class="h6 mb-0">
-                        <a href="blog-single-v2.html">A session with a psychologist as a personal choice</a>
-                    </span>
-                </li>
-                <li class="border-bottom pb-3 mb-3">
-                    <span class="h6 mb-0">
-                        <a href="blog-single-v1.html">Travel destinations to inspire and restore resources</a>
-                    </span>
-                </li>
-                <li class="border-bottom pb-3">
-                    <span class="h6 mb-0">
-                        <a href="blog-single-v2.html">How to look for inspiration for new goals in life?</a>
-                    </span>
-                </li>
-            </ul>
-
 
             <!-- Relevant topics -->
             <h4 class="pt-3 pt-lg-1 mb-4">Relevant topics:</h4>
             <div class="d-flex flex-wrap mt-n3 ms-n3 mb-lg-5 mb-4 pb-3 pb-lg-0">
                 @foreach (CategoryDTO topCategory in topCategories)
                 {
-                    <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="#">@topCategory.Name</a>
+                    <a class="btn btn-outline-secondary rounded-pill mt-3 ms-3" href="/category/@topCategory.Id">@topCategory.Name</a>
                 }
             </div>
 
@@ -95,6 +71,8 @@
 
 @code {
     #region Parameter
+    [SupplyParameterFromQuery]
+    public string? Query { get; set; }
 
     #endregion
 

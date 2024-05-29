@@ -10,8 +10,7 @@
 
 <PageTitle>Current Blogs | Categories</PageTitle>
 
-        @*Add new BlogPosts*@
-<div class="d-flex justify-content-center justify-content-sm-end justify-content-md-start mb-3">
+<div class="d-flex justify-content-center justify-content-sm-end justify-content-md-start mb-3 col-8">
     <a href="/blogposts/create" class="btn btn-primary ">
         <i class="ai-arrow-down d-sm-none"> </i>
         Add Post
@@ -38,7 +37,7 @@
     <p class="lead mt-5">Published</p>
     @foreach (BlogPostDTO blogPost in publishedPosts.Data)
     {
-        <div @key="blogPost.Id">
+        <div @key="blogPost.Id" class="col-8">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync" />
         </div>
@@ -47,7 +46,7 @@
     <p class="lead mt-5">Drafts</p>
     @foreach (BlogPostDTO blogPost in draftPosts.Data)
     {
-        <div @key="blogPost.Id">
+        <div @key="blogPost.Id" class="col-8">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync"
                                 OnPublish="PublishBlogPostAsync" />
@@ -59,7 +58,7 @@ else if (selectedView == SelectedView.Published)
     <h2 class="">Showing: Published </h2>
     @foreach (BlogPostDTO blogPost in publishedPosts.Data)
     {
-        <div @key="blogPost.Id">
+        <div @key="blogPost.Id" class="col-8">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync" />
         </div>
@@ -70,7 +69,7 @@ else if (selectedView == SelectedView.Drafts)
     <h2 class="">Showing: Drafts </h2>
     @foreach (BlogPostDTO blogPost in draftPosts.Data)
     {
-        <div @key="blogPost.Id">
+        <div @key="blogPost.Id" class="col-8">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync"
                                 OnPublish="PublishBlogPostAsync" />
@@ -82,7 +81,7 @@ else if (selectedView == SelectedView.Deleted)
     <h2>Showing:<span class="text-danger"> Recently Deleted</span></h2>
     @foreach (BlogPostDTO blogPost in deletedPosts.Data)
     {
-        <div @key="blogPost.Id">
+        <div @key="blogPost.Id" class="col-8">
             <AuthorBlogPostCard BlogPost="blogPost"
                                 OnDelete="DeleteBlogPostAsync"
                                 OnRestore="RestoreBlogPostAsync" />

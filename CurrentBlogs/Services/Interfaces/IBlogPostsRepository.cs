@@ -10,6 +10,9 @@ namespace CurrentBlogs.Services.Interfaces
         Task<PagedList<BlogPost>> GetPublishedBlogPostsAsync(int page, int pageSize);
         Task<PagedList<BlogPost>> GetDraftPostsAsync(int page, int pageSize);
         Task<PagedList<BlogPost>> GetDeletedPostsAsync(int page, int pageSize);
+        Task<PagedList<BlogPost>> GetPostsByCategoryId(int categoryId, int page, int pageSize);
+        Task<PagedList<BlogPost>> SearchBlogPostsAsync(string query, int page, int pageSize);
+
         Task<IEnumerable<BlogPost>> GetTopBlogPostsAsync(int numberOfPopular);
         #endregion
 
@@ -19,6 +22,9 @@ namespace CurrentBlogs.Services.Interfaces
         #region Get Item
         Task<BlogPost?> GetAnyBlogPostByIdAsync(int blogPostId);
         Task<BlogPost?> GetPublishedBlogPostBySlugAsync(string slug);
+
+        Task<Tag?> GetTagByIdAsync(int tagId);
+        Task<PagedList<BlogPost>> GetPostsByTagIdAsync(int tagId, int page, int pageSize);
         #endregion
 
 
@@ -38,7 +44,6 @@ namespace CurrentBlogs.Services.Interfaces
         Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames);
         Task RemoveTagsFromBlogPostAsync(int blogPostId);
         #endregion
-
 
     }
 }

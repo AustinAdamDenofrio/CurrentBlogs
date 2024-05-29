@@ -5,6 +5,11 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
 {
     public interface IBlogPostDTOService
     {
+
+        Task<PagedList<BlogPostDTO>> SearchBlogPostsAsync(string query, int page, int pageSize);
+
+        Task<PagedList<BlogPostDTO>> GetPostsByCategoryId(int categoryId, int page, int pageSize);
+
         Task<BlogPostDTO> CreateBlogPostAsync(BlogPostDTO blogPostDTO);
 
         Task UnpublishBlogPostAsync(int blogPostId);
@@ -28,5 +33,9 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
         Task RestoreDeletedBlogPostAsync(int blogPostId);
 
         Task<IEnumerable<BlogPostDTO>> GetTopBlogPostsAsync(int numberOfPopular);
+
+
+        Task<TagDTO?> GetTagByIdAsync(int tagId);
+        Task<PagedList<BlogPostDTO>> GetPostsByTagIdAsync(int tagId, int page, int pageSize);
     }
 }

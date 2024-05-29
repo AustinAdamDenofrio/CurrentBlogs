@@ -12,7 +12,7 @@
 
         <a class="navbar-brand pe-sm-3" href="/">
             <span class="text-primary flex-shrink-0 me-2">
-                <img width="35" height="32" src="Images/Logo_Dark_NoText.svg" />
+                <img width="40" height="32" src="Images/Logo_Dark_NoText.svg" />
             </span>
             Current Blogs
         </a>
@@ -24,15 +24,13 @@
 
         <!-- Navbar collapse (Main navigation) -->
         <nav class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav navbar-nav-scroll" style="--ar-scroll-height: 520px;">
+            <ul class="navbar-nav navbar-nav-scroll flex-grow-1" style="--ar-scroll-height: 520px;">
 
                 <li class="nav-item">
                     <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
                         Home
                     </NavLink>
                 </li>
-
-
 
                 <li class="nav-item dropdown">
                     <NavLink class="nav-link dropdown-toggle" href="categories" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -42,15 +40,14 @@
                         <li><a class="dropdown-item" href="/">All Catagories</a></li>
                         @foreach (CategoryDTO category in categories.Data)
                         {
-                            <li><a class="dropdown-item" href="/?category=@category.Id">@category.Name</a></li>
+                            <li><a class="dropdown-item" href="/category/@category.Id">@category.Name</a></li>
                         }
                     </ul>
                 </li>
 
-
                 @*Author Menu Only*@
                 <AuthorizeView Roles="Author">
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown ms-lg-auto">
                         <NavLink class="nav-link dropdown-toggle" href="Author" Match="NavLinkMatch.Prefix" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                             Author Menu
                         </NavLink>
@@ -71,7 +68,11 @@
                                 @(context.User?.Identity?.Name ?? "Account")
                             </NavLink>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="Account/Manage">Profile</a></li>
+                                <li>
+                                    <a class="dropdown-item nav-link ms-4" href="Account/Manage">
+                                        Profile
+                                    </a>
+                                </li>
                                 <li>
                                     <form class="dropdown-item" action="Account/Logout" method="post">
                                         <AntiforgeryToken />

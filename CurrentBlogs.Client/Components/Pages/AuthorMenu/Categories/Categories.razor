@@ -21,7 +21,7 @@
     @*Generate Categories on the Page*@
     @foreach (CategoryDTO category in categories.Data)
 {
-    <div @key="category.Id">
+    <div @key="category.Id" class="col-xl-8">
         <AuthorCategoryCard Category="category"
                             OnDelete="DeleteCategory" />
     </div>

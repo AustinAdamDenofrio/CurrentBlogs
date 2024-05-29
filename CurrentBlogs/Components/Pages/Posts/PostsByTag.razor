@@ -1,0 +1,79 @@
+﻿@page "/tag/{tagId:int}"
+@layout SideBarLayout
+
+@inject IBlogPostDTOService BlogService
+@inject NavigationManager Nav
+
+
+
+<!-- Blog posts -->
+@if (tag is not null)
+{
+    <PageTitle> Current Blogs | Category: @tag.Name</PageTitle>
+
+    <h1>Tags: "@tag.Name"</h1>
+
+    @foreach (BlogPostDTO blogPost in blogPosts.Data)
+    {
+        @if (blogPost.IsPublished == true && blogPost.IsDeleted == false)
+        {
+            <BlogCard BlogPost="blogPost" />
+        }
+    }
+    
+}
+
+<!-- Post -->
+
+
+
+<Paginator @rendermode="InteractiveServer"
+    TotalPages="blogPosts.TotalPages"/>
+
+
+
+
+@code {
+    #region Parameters
+    [Parameter]
+    public int TagId { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int Page { get; set; }
+    #endregion
+
+
+
+
+    #region State
+    private int pageSize = 1;
+    bool currentPageIsGenerated = false;
+    private PagedList<BlogPostDTO> blogPosts = new PagedList<BlogPostDTO>();
+    private TagDTO? tag;
+    #endregion
+
+
+
+
+    #region Methods
+    protected override void OnInitialized()
+    {
+        if (Page < 1) Page = 1;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Page < 1) Page = 1;
+
+        tag = await BlogService.GetTagByIdAsync(TagId);
+
+        if (tag is null)
+        {
+            Nav.NavigateTo("/");
+        }
+        blogPosts = await BlogService.GetPostsByTagIdAsync(TagId, Page, pageSize);
+    }
+
+
+    #endregion
+}

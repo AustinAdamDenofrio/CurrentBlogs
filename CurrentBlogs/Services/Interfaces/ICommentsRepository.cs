@@ -12,13 +12,13 @@ namespace CurrentBlogs.Services.Interfaces
 
 
         #region Get Item
-        Task<Comment?> GetCommentById(int commentId, string userId);
+        Task<Comment?> GetCommentByIdAsync(int commentId);
         #endregion
 
         #region Update Comments DB Item
         Task CreateCommentAsync(Comment comment);
         Task UpdateCommentAsync(Comment comment);
-        Task DeleteCommentAsync(int commentId, string userId);
+        Task DeleteCommentAsync(int commentId);
         #endregion
     }
 }

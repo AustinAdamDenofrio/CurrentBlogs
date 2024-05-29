@@ -2,13 +2,13 @@
 {
     <div class="mx-3 mx-sm-0 rounded-5 mb-5 mb-sm-3">
         <div class="row g-0 border-0 pt-0">
-            <a class="col-sm-5 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="#" style="background-image: url(@Category.ImageUrl); min-height: 14rem" aria-label="Post image">
+            <a class="col-sm-4 bg-repeat-0 bg-size-cover bg-position-center rounded-5" href="/category/@Category.Id" style="background-image: url(@Category.ImageUrl); min-height: 14rem" aria-label="Post image">
             </a>
-            <div class="col-sm-7 px-3 pb-3">
+            <div class="col-sm-8 px-3 pb-3">
                 <div class="pt-4 pb-sm-4 ps-sm-4 pe-lg-4 d-flex flex-column h-100">
                     <div class="flex-grow-1">
                         <h3>
-                            <a href="blog-single-v2.html">@Category.Name</a>
+                            <a href="/category/@Category.Id">@Category.Name</a>
                         </h3>
                         <p class="d-sm-none d-md-block">@Category.Description</p>
                     </div>
@@ -16,7 +16,6 @@
                         <div class="col-12 col-md-7 d-flex justify-content-start">
                             <div class="vstack justify-content-end align-items-start">
                                 <div class="mb-3">
-                                    @*Authorized users only*@
                                     @if (isDeleting == false)
                                     {
                                         <div class="fs-4 d-flex justify-content-start">
@@ -37,35 +36,13 @@
                                     }
                                 </div>
                                 <div class="d-flex flex-wrap mt-n2">
-                                    <a class="nav-link text-body-secondary fs-sm fw-normal p-0 mt-2 me-3" href="#">
-                                        10
-                                        <i class="ai-share fs-lg ms-1"></i>
-                                    </a>
-                                    <a class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
-                                        4
-                                        <i class="ai-message fs-lg ms-1"></i>
-                                    </a>
+                                    <p class="nav-link text-body-secondary fs-sm fw-normal d-flex align-items-end p-0 mt-2" href="#">
+                                        @Category.BlogPosts.Count
+                                        <i class="ai-note fs-lg ms-1"></i>
+                                    </p>
                                     <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
                                     <span class="fs-sm text-body-secondary mt-2">12 hours ago</span>
-                                    <span class="fs-xs opacity-20 mt-2 mx-3">|</span>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-5 d-flex align-items-end mt-2">
-                            <div class="d-flex flex-wrap justify-content-center mt-n2">
-                                @* @foreach (TagDTO tag in Category.tag)
-                            {
-
-                            } *@
-                                <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
-                                    Tag
-                                </a>
-                                <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
-                                    BlogTag
-                                </a>
-                                <a class="badge text-nav fs-xs border mt-2 me-1" href="#">
-                                    Blazor Tag
-                                </a>
                             </div>
                         </div>
                     </div>

@@ -41,6 +41,19 @@ namespace CurrentBlogs.Services
 
 
         #region Get List
+        public async Task<PagedList<BlogPost>> GetPostsByCategoryId(int categoryId, int page, int pageSize)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            PagedList<BlogPost> posts = await context.BlogPosts
+                                                            .Where(b => b.IsPublished && !b.IsDeleted && b.CategoryId == categoryId)
+                                                            .Include(b => b.Category)
+                                                            .Include(b => b.Comments)
+                                                            .OrderByDescending(bp => bp.Created)
+                                                            .ToPagedListAsync(page, pageSize);
+
+            return posts;
+        }
         public async Task<PagedList<BlogPost>> GetPublishedBlogPostsAsync(int page, int pageSize)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
@@ -48,6 +61,8 @@ namespace CurrentBlogs.Services
             PagedList<BlogPost> posts = await context.BlogPosts
                                                             .Where(b => b.IsPublished && !b.IsDeleted)
                                                             .Include(b => b.Category)
+                                                            .Include(b => b.Tags)
+                                                            .Include(b => b.Comments)
                                                             .OrderByDescending(bp => bp.Created)
                                                             .ToPagedListAsync(page, pageSize);
 
@@ -77,7 +92,6 @@ namespace CurrentBlogs.Services
 
             return posts;
         }
-
         public async Task<IEnumerable<BlogPost>> GetTopBlogPostsAsync(int numberOfPopular)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
@@ -91,6 +105,50 @@ namespace CurrentBlogs.Services
 
             return posts;
         }
+        public async Task<PagedList<BlogPost>> GetPostsByTagIdAsync(int tagId, int page, int pageSize)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            PagedList<BlogPost> posts = await context.BlogPosts
+                .Where(b => b.IsPublished == true && b.IsDeleted == false)
+                .Include(b => b.Category)
+                .Include(b => b.Tags)
+                .Include(b => b.Comments)
+                .Where(b => b.Tags.Any(t => t.Id == tagId))
+                .OrderByDescending (bp => bp.Created)
+                .ToPagedListAsync(page, pageSize);
+
+            return posts;
+        }
+        public async Task<PagedList<BlogPost>> SearchBlogPostsAsync(string query, int page, int pageSize)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            string normalizedQuery = query.Trim().ToLower();
+
+            PagedList<BlogPost> results = await context.BlogPosts
+                .Where(b => b.IsPublished == true && b.IsDeleted == false)
+                .Include(b => b.Category)
+                .Include(bp => bp.Tags)
+                .Include(bp => bp.Comments)
+                    .ThenInclude(c => c.Author)
+                .Where(b => string.IsNullOrWhiteSpace(normalizedQuery)
+                        || b.Title!.ToLower().Contains(normalizedQuery)
+                        || b.Abstract!.ToLower().Contains(normalizedQuery)
+                        || b.Content!.ToLower().Contains(normalizedQuery)
+                        || b.Category!.Name!.ToLower().Contains(normalizedQuery)
+                        || b.Tags.Select(t => t.Name!.ToLower()).Any(tagName => tagName.Contains(query))
+                        //tags.any(nrom q)
+                        || b.Comments.Any(c => c.Content!.ToLower().Contains(normalizedQuery)
+                                        || c.Author!.FirstName!.ToLower().Contains(normalizedQuery)
+                                        || c.Author!.LastName!.ToLower().Contains(normalizedQuery))
+                    )
+                .OrderByDescending(bp => bp.Created)
+                .ToPagedListAsync(page, pageSize);
+
+            return results;
+        }
+
         #endregion
 
 
@@ -120,6 +178,13 @@ namespace CurrentBlogs.Services
                                     .FirstOrDefaultAsync(bp => bp.Slug == slug);
 
             return blogPost;
+        }
+        public async Task<Tag?> GetTagByIdAsync(int tagId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+            Tag? tag = await context.Tags.FirstOrDefaultAsync(t => t.Id == tagId);
+
+            return tag;
         }
         #endregion
 
@@ -336,6 +401,10 @@ namespace CurrentBlogs.Services
             return slug;
 
         }
+
+
+
+
 
         #endregion
 

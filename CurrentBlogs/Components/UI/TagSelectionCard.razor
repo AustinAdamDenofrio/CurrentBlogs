@@ -1,0 +1,39 @@
+﻿    <!-- Subscription -->
+@if (Tags is not null)
+{
+    <section class="container mt-3 mb-2 mb-md-3 mb-xl-1 pb-2" data-bs-theme="dark">
+        <div class="position-relative bg-dark rounded-5 overflow-hidden p-md-5 p-4">
+            <div class="position-relative ">
+                <h2 class="h1 pb-md-4 pb-3 mt-n2">Sort by tag...</h2>
+                <div class="d-flex flex-wrap-reverse justify-content-center align-items-end">
+                    @foreach (TagDTO tag in Tags)
+                    {
+                        <div class="">
+                            <div class="form-check mb-2">
+                                <a class="fs-base fw-medium text-secondary text-decoration-none rounded-pill btn btn-outline-secondary" href="tag/@tag.Id" Match="NavLinkMatch.All">@tag.Name</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+
+@code {
+    #region Parameter
+    [Parameter, EditorRequired]
+    public IEnumerable<TagDTO>? Tags { get; set; }
+    #endregion
+
+
+
+    #region State
+    #endregion
+
+
+
+    #region Methods
+    #endregion
+}

@@ -11,14 +11,14 @@ namespace CurrentBlogs.Client.Components.Services.Interfaces
 
 
         #region Get Item
-        Task<CommentDTO?> GetCommentById(CommentDTO commentDTO, int userId);
+        Task<CommentDTO?> GetCommentByIdAsync(int commentId);
 
         #endregion
 
         #region Update Comments DB Item
         Task CreateCommentAsync(CommentDTO comment, string userId);
-        Task UpdateCommentAsync(CommentDTO comment, string userID);
-        Task DeleteCommentAsync(int commentId, string userId);
+        Task UpdateCommentAsync(CommentDTO comment, string userId);
+        Task DeleteCommentAsync(int commentId);
         #endregion
     }
 }

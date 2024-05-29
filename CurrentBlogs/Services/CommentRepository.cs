@@ -35,17 +35,15 @@ namespace CurrentBlogs.Services
         #endregion
 
 
-
-
         #region Get Item
-        public async Task<Comment?> GetCommentById(int commentId, string userId)
+        public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
 
             Comment? comment = await context.Comments
                                     .Include(c => c.BlogPost)
                                     .Include(c => c.Author)
-                                    .FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userId);
+                                    .FirstOrDefaultAsync(c => c.Id == commentId);
 
 
 
@@ -81,11 +79,11 @@ namespace CurrentBlogs.Services
             }
         }
 
-        public async Task DeleteCommentAsync(int commentId, string userId)
+        public async Task DeleteCommentAsync(int commentId)
         {
             using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
 
-            Comment? comment = await context.Comments.FirstOrDefaultAsync(c => c.Id == commentId && c.AuthorId == userId);
+            Comment? comment = await context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
 
             if (comment != null)
             {

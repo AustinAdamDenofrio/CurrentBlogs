@@ -4,15 +4,20 @@ using CurrentBlogs.Helper;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 using NuGet.Protocol.Core.Types;
+using Microsoft.AspNetCore.Identity;
+using CurrentBlogs.Data;
 
 namespace CurrentBlogs.Services
 {
     public class CommentDTOService : ICommentsDTOService
     {
         private readonly ICommentsRepository _repository;
+        //private readonly UserManager<ApplicationUser> _userManager;
+
         public CommentDTOService(ICommentsRepository repository)
         {
             _repository = repository;
+            //_userManager = userManager;
         }
 
 
@@ -29,9 +34,10 @@ namespace CurrentBlogs.Services
 
 
         #region Get Item
-        Task<CommentDTO?> ICommentsDTOService.GetCommentById(CommentDTO commentDTO, int userId)
+        public async Task<CommentDTO?> GetCommentByIdAsync(int commentId)
         {
-            throw new NotImplementedException();
+            Comment? comment = await _repository.GetCommentByIdAsync(commentId);
+            return comment == null ? null : comment.ToDTO();
         }
         #endregion
 
@@ -51,7 +57,7 @@ namespace CurrentBlogs.Services
 
         public async Task UpdateCommentAsync(CommentDTO commentDTO, string userId)
         {
-            Comment? comment = await _repository.GetCommentById(commentDTO.Id, userId);
+            Comment? comment = await _repository.GetCommentByIdAsync(commentDTO.Id);
 
             if (comment is not null)
             {
@@ -65,9 +71,9 @@ namespace CurrentBlogs.Services
             }
         }
 
-        public async Task DeleteCommentAsync(int commentId, string userId)
+        public async Task DeleteCommentAsync(int commentId)
         {
-            await _repository.DeleteCommentAsync(commentId, userId);
+            await _repository.DeleteCommentAsync(commentId);
         }
 
         #endregion
