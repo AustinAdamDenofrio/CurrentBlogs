@@ -1,3 +1,4 @@
+using CurrentBlogs.Client.Components.Models;
 using CurrentBlogs.Client.Components.Services.Interfaces;
 using CurrentBlogs.Components;
 using CurrentBlogs.Components.Account;
@@ -6,6 +7,7 @@ using CurrentBlogs.Services;
 using CurrentBlogs.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -59,8 +61,20 @@ builder.Services.AddScoped<ICommentsRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentsDTOService, CommentDTOService>();
 
 
+builder.Services.AddCors(builder =>
+{
+    builder.AddPolicy("DefaultPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
+
+app.UseCors("DefaultPolicy");
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -91,8 +105,29 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(CurrentBlogs.Client._Imports).Assembly);
 
 // Add additional endpoints required by the Identity /Account Razor components.
+
+
 app.MapAdditionalIdentityEndpoints();
 
 app.MapControllers();
+
+// GET: api/blogposts
+app.MapGet("api/blogposts", async ([FromServices] IBlogPostDTOService blogService,
+                                   [FromQuery] int page = 1,
+                                   [FromQuery] int pageSize = 4) =>
+{
+    try
+    {
+        PagedList<BlogPostDTO> blogPosts = await blogService.GetPublishedBlogPostsAsync(page, pageSize);
+        return Results.Ok(blogPosts);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        return Results.Problem();
+    }
+});
+
+
 
 app.Run();
