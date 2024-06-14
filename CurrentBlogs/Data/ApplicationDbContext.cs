@@ -12,5 +12,6 @@ namespace CurrentBlogs.Data
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
 
+        public IEnumerable<object> Category { get; internal set; }
     }
 }
