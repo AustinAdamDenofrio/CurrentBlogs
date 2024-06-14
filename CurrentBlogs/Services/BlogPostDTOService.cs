@@ -4,6 +4,13 @@ using CurrentBlogs.Helper;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
 
+using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NuGet.Protocol.Core.Types;
+using System.Drawing.Printing;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace CurrentBlogs.Services
 {
     public class BlogPostDTOService : IBlogPostDTOService
