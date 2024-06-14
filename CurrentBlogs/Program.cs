@@ -40,6 +40,7 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
         connectionString,
         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     ));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

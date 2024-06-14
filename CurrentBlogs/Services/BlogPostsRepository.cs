@@ -273,6 +273,20 @@ namespace CurrentBlogs.Services
         #endregion
 
 
+        public async Task PublishBlogPostAsync(int blogPostId)
+        {
+            using ApplicationDbContext context = _dbContextFactory.CreateDbContext();
+
+            BlogPost? blogPost = await context.BlogPosts.FirstOrDefaultAsync(bp => bp.Id == blogPostId);
+
+            if (blogPost != null)
+            {
+                blogPost.IsPublished = true;
+
+                context.BlogPosts.Update(blogPost);
+                await context.SaveChangesAsync();
+            }
+        }
 
         #region Tags
         public async Task AddTagsToBlogPostAsync(int blogPostId, IEnumerable<string> tagNames)
@@ -326,10 +340,6 @@ namespace CurrentBlogs.Services
             }
         }
 
-        public Task PublishBlogPostAsync(int blogPostId)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 

@@ -1,14 +1,8 @@
 ﻿using CurrentBlogs.Client.Components.Models;
-using CurrentBlogs.Client.Components.Pages.AuthorMenu.BlogPosts;
 using CurrentBlogs.Client.Components.Services.Interfaces;
 using CurrentBlogs.Helper;
 using CurrentBlogs.Models;
 using CurrentBlogs.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using NuGet.Protocol.Core.Types;
-using System.Drawing.Printing;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CurrentBlogs.Services
 {
