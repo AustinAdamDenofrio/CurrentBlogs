@@ -39,6 +39,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Components\Pages\Posts\PostsByCategory.razor" />
+    <_ContentIncludedByDefault Remove="wwwroot\Images\DefaultProfilePicture.png" />
     <_ContentIncludedByDefault Remove="wwwroot\Images\EmptyHomeScreenshot.png" />
     <_ContentIncludedByDefault Remove="wwwroot\Images\mark_dark.svg" />
   </ItemGroup>
